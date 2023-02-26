@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: compose/local/app/Dockerfile
+    image: webapp
+    command: /start
+    volumes:
+      - .:/app
+    ports:
+      - 8005:8000
+    env_file:
+      - .env
