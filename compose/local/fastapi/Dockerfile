@@ -24,4 +24,4 @@ COPY ./compose/local/fastapi/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-WORKDIR /fastapi
+WORKDIR /app
