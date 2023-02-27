@@ -4,7 +4,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: compose/local/app/Dockerfile
+      dockerfile: compose/local/fastapi/Dockerfile
     image: webapp
     command: /start
     volumes:
