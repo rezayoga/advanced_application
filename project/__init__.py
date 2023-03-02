@@ -1,5 +1,8 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
+from rich.console import Console
+
+console = Console()
 
 
 def create_app() -> FastAPI:
@@ -56,5 +59,6 @@ def create_app() -> FastAPI:
         while True:
             data = await websocket.receive_text()
             await websocket.send_text(f"Message text was: {data}")
+            console.print(f"Message text was: {data}")
 
     return app
