@@ -19,7 +19,7 @@ def create_app() -> FastAPI:
     <!DOCTYPE html>
     <html>
         <head>
-            <title>Chat</title>
+            <title>Chat App</title>
         </head>
         <body>
             <h1>WebSocket Chat</h1>
