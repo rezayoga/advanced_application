@@ -1,21 +1,52 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey
 
 from project.database import Base
 
 
-class Order(Base):
-    __tablename__ = "orders"
+class Poll(Base):
+    __tablename__ = "polls"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, nullable=False)
-    product_id = Column(Integer, nullable=False)
-    quantity = Column(Integer, nullable=False)
-    price = Column(Integer, nullable=False)
-    status = Column(String, nullable=False)
+    question = Column(String, nullable=False)
 
-    def __init__(self, user_id, product_id, quantity, price, status):
+    def __init__(self, question):
+        self.question = question
+
+
+class Option(Base):
+    __tablename__ = "options"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    poll_id = Column(Integer, ForeignKey("polls.id"), nullable=False, index=True)
+    option = Column(String, nullable=False)
+
+    def __init__(self, poll_id, option):
+        self.poll_id = poll_id
+        self.option = option
+
+
+class Vote(Base):
+    __tablename__ = "votes"
+    __table_args__ = (
+        UniqueConstraint("poll_id", "option_id", "user_id", name="unique_vote"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    poll_id = Column(Integer, nullable=False, index=True)
+    option_id = Column(Integer, nullable=False, index=True)
+    user_id = Column(Integer, nullable=False, index=True)
+
+    def __init__(self, poll_id, option_id, user_id):
+        self.poll_id = poll_id
+        self.option_id = option_id
         self.user_id = user_id
-        self.product_id = product_id
-        self.quantity = quantity
-        self.price = price
-        self.status = status
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
