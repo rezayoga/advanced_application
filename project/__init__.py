@@ -32,7 +32,7 @@ def create_app() -> FastAPI:
 			</select>
 	        <hr />
 	        <div id="id"></div>
-	        <div id="message"></div>
+	        <div id="messages"></div>
 	        <script>
 	            var ws = null;
 	            var id = null;
@@ -43,12 +43,19 @@ def create_app() -> FastAPI:
 					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
-		                    document.getElementById('message').innerHTML = document.getElementById('message').innerHTML 
+		                    document.getElementById('messages').innerHTML = document.getElementById('message').innerHTML 
 		                    + "<hr />" + event.data;
 		                };
 	                    document.getElementById('id').innerHTML = id;
 	                }
 	            }
+	            ws.onmessage = function(event) {
+                    var messages = document.getElementById('messages')
+                    var message = document.createElement('li')
+                    var content = document.createTextNode(event.data)
+                    message.appendChild(content)
+                    messages.appendChild(message)
+                };
 	        </script>
 	    </body>
 	</html>
