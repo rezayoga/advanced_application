@@ -28,7 +28,7 @@ class Option(Base):
 class Vote(Base):
     __tablename__ = "votes"
     __table_args__ = (
-        UniqueConstraint("poll_id", "option_id", "user_id", name="unique_vote"),
+        UniqueConstraint("poll_id", "user_id", name="unique_vote"),
     )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
