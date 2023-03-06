@@ -21,10 +21,10 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Websocket Polling App</title>
 	    </head>
-	    <body onload="add_user(event)">
+	    <body onload="login_user(event)">
 	        <h1 id="h1-title">Users</h1>
-	        <select user_id="select_id" style="width:30%" onchange="add_user(this)">
-	          <option selected="selected" value="-">Select User</option>
+	        <select user_id="select_id" style="width:30%" onchange="login_user(this)">
+	          <option selected="selected" value="-">Select</option>
 			  <option value="1">Foo</option>
 			  <option value="2">Bar</option>
 			  <option value="3">Baz</option>
@@ -36,7 +36,7 @@ def create_app() -> FastAPI:
 	        <script>
 	            var ws = null;
 	            var id = null;
-	            function add_user(select_object) {
+	            function login_user(select_object) {
 	                var id = select_object.value;
 	                if (id !== undefined) {
 		                const ws_url = '/ws/' + id;
@@ -58,10 +58,11 @@ def create_app() -> FastAPI:
     async def get():
         return HTMLResponse(html)
 
-    @app.websocket("/ws")
-    async def websocket_endpoint(websocket: WebSocket):
+    @app.websocket("/ws/{id}")
+    async def websocket_endpoint(websocket: WebSocket, item_id: str):
         await websocket.accept()
         while True:
+            console.print(f"User {item_id} connected!")
             data = await websocket.receive_text()
             await websocket.send_text(f"Message text was: {data}")
             console.print(f"Message text was: {data}")
