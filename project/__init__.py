@@ -8,8 +8,8 @@ console = Console()
 def create_app() -> FastAPI:
     app = FastAPI()
 
-    from project.orders import orders_router  # new
-    app.include_router(orders_router)  # new
+    from project.polls import polls_router  # new
+    app.include_router(polls_router)  # new
 
     @app.get("/")
     async def root():
@@ -70,8 +70,5 @@ def create_app() -> FastAPI:
         await websocket.accept()
         while True:
             console.print(f"User {id} connected!")
-            data = await websocket.receive_text()
-            await websocket.send_text(f"Message text was: {data}")
-            console.print(f"Message text was: {data}")
 
     return app

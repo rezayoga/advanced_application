@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-orders_router = APIRouter(
-    prefix="/order",
+polls_router = APIRouter(
+    prefix="/poll",
 )
 
 from . import models  # noqa
