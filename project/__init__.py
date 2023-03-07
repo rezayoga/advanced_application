@@ -48,7 +48,8 @@ def create_app() -> FastAPI:
 		                    messages.appendChild(message);
 		                };
 	                    ws.onopen = function(event) {
-	                        ws.send("Hello World!");
+	                        const d = new Date();
+	                        ws.send(d.toLocaleTimeString());
                         };
 	                }
 	            }
