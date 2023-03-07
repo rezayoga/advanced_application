@@ -50,13 +50,6 @@ def create_app() -> FastAPI:
 	                    document.getElementById('id').innerHTML = id;
 	                }
 	            }
-	            ws.onmessage = function(event) {
-                    var messages = document.getElementById('messages')
-                    var message = document.createElement('li')
-                    var content = document.createTextNode(event.data)
-                    message.appendChild(content)
-                    messages.appendChild(message)
-                };
 	        </script>
 	    </body>
 	</html>
