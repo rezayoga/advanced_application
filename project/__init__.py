@@ -44,7 +44,10 @@ def create_app() -> FastAPI:
 		                    console.log(event.data);
 		                    document.getElementById('messages').innerHTML = document.getElementById('message').innerHTML + "<hr />" + event.data;
 		                };
-	                    ws.send("Hello World!");
+	                    ws.onopen = function(event) {
+	                        console.log("Connected!");
+	                        ws.send("Hello World!");
+                        };
 	                    document.getElementById('id').innerHTML = id;
 	                }
 	            }
