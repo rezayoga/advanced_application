@@ -69,7 +69,7 @@ def create_app() -> FastAPI:
             user_connected = f"User {id} connected!"
             console.print(user_connected)
             data = await websocket.receive_text()
-            await websocket.send_text(f"Message text was: {data} - {user_connected}")
-            console.print(f"Message text was: {data}")
+            await websocket.send_text(f"{data} - {user_connected}")
+            console.print(f"{data}")
 
     return app
