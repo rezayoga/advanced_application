@@ -31,7 +31,6 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
-	        <div id="id"></div>
 	        <div id="messages"></div>
 	        <script type="text/javascript">
 	            var ws = null;
@@ -42,11 +41,13 @@ def create_app() -> FastAPI:
 	                if (id !== undefined) {
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
-		                    document.getElementById('id').appendChild(id);
-		                    document.getElementById('messages').appendChild(document.getElementById('message') + "<hr />" + event.data);
+		                    var messages = document.getElementById('messages');
+		                    var message = document.createElement('li');
+		                    var content = document.createTextNode(event.data);
+		                    message.appendChild(content);
+		                    messages.appendChild(message);
 		                };
 	                    ws.onopen = function(event) {
-	                        console.log("Connected!");
 	                        ws.send("Hello World!");
                         };
 	                }
