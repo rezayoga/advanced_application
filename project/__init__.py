@@ -31,8 +31,8 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
-	        <div class="id"></div>
-	        <div class="messages"></div>
+	        <div id="id"></div>
+	        <div id="messages"></div>
 	        <script type="text/javascript">
 	            var ws = null;
 	            function login_user(select_object) {
@@ -42,8 +42,8 @@ def create_app() -> FastAPI:
 	                if (id !== undefined) {
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
-		                    document.getElementsByClassName('id').innerHTML = id;
-		                    document.getElementsByClassName('messages').innerHTML = document.getElementsByClassName('message').innerHTML + "<hr />" + event.data;
+		                    document.getElementsById('id').innerHTML = id;
+		                    document.getElementsById('messages').innerHTML = document.getElementsById('message').innerHTML + "<hr />" + event.data;
 		                };
 	                    ws.onopen = function(event) {
 	                        console.log("Connected!");
