@@ -41,6 +41,7 @@ def create_app() -> FastAPI:
 	                if (id !== undefined) {
 		                const ws_url = '/ws/' + id;
 					    const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+					    ws.send('User ' + id + ' connected!');
 		                ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('messages').innerHTML = document.getElementById('message').innerHTML 
