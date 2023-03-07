@@ -46,7 +46,6 @@ def create_app() -> FastAPI:
 		                };
 	                    document.getElementById('id').innerHTML = id;
 	                }
-	                ws.send('User ' + id + ' connected!');
 	            }
 	        </script>
 	    </body>
