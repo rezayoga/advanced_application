@@ -42,8 +42,8 @@ def create_app() -> FastAPI:
 	                if (id !== undefined) {
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
-		                    document.getElementsById('id').innerHTML = id;
-		                    document.getElementsById('messages').innerHTML = document.getElementsById('message').innerHTML + "<hr />" + event.data;
+		                    document.getElementById('id').innerHTML = id;
+		                    document.getElementById('messages').innerHTML = document.getElementById('message').innerHTML + "<hr />" + event.data;
 		                };
 	                    ws.onopen = function(event) {
 	                        console.log("Connected!");
