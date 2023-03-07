@@ -37,7 +37,7 @@ def create_app() -> FastAPI:
 	            var ws = null;
 	            var id = null;
 	            const ws_url = '/ws/' + id;
-				const ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+				var ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
 	            function login_user(select_object) {
 	                var id = select_object.value;
 	                if (id !== undefined) {
