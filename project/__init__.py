@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Websocket Polling App</title>
 	    </head>
-	    <body>
+	    <body onload="login_user(this)">
 	        <h1 id="h1-title">Users</h1>
 	        <select user_id="select_id" style="width:30%" onchange="login_user(this)">
 	          <option selected="selected" value="-">Select</option>
