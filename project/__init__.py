@@ -65,9 +65,10 @@ def create_app() -> FastAPI:
     async def websocket_endpoint(websocket: WebSocket, id: str):
         await websocket.accept()
         while True:
-            console.print(f"User {id} connected!")
+            user_connected = f"User {id} connected!"
+            console.print(user_connected)
             data = await websocket.receive_text()
-            await websocket.send_text(f"Message text was: {data}")
+            await websocket.send_text(f"Message text was: {data} - {user_connected}")
             console.print(f"Message text was: {data}")
 
     return app
