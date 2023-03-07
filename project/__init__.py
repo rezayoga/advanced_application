@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Websocket Polling App</title>
 	    </head>
-	    <body onload="login_user(this)">
+	    <body>
 	        <h1 id="h1-title">Users</h1>
 	        <select user_id="select_id" style="width:30%" onchange="login_user(this)">
 	          <option selected="selected" value="-">Select</option>
@@ -31,8 +31,8 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
-	        <div id="id"></div>
-	        <div id="messages"></div>
+	        <div class="id"></div>
+	        <div class="messages"></div>
 	        <script type="text/javascript">
 	            var ws = null;
 	            function login_user(select_object) {
@@ -42,7 +42,8 @@ def create_app() -> FastAPI:
 	                if (id !== undefined) {
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
-		                    document.getElementById('messages').innerHTML = document.getElementById('message').innerHTML + "<hr />" + event.data;
+		                    document.getElementsByClassName('id').innerHTML = id;
+		                    document.getElementsByClassName('messages').innerHTML = document.getElementsByClassName('message').innerHTML + "<hr />" + event.data;
 		                };
 	                    ws.onopen = function(event) {
 	                        console.log("Connected!");
