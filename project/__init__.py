@@ -43,7 +43,7 @@ def create_app() -> FastAPI:
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
 		                    document.getElementById('id').appendChild(id);
-		                    document.getElementById('messages')appendChild(document.getElementById('message') + "<hr />" + event.data);
+		                    document.getElementById('messages').appendChild(document.getElementById('message') + "<hr />" + event.data);
 		                };
 	                    ws.onopen = function(event) {
 	                        console.log("Connected!");
