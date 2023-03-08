@@ -140,7 +140,7 @@ def create_app() -> FastAPI:
             id_user = websocket.path_params['id']
 
             if session is None:
-                session = DBConnectionService(session=Depends(get_session))
+                session = DBConnectionService(session=Depends(get_session)).get_connection()
 
             user = await session.execute(select(UserModel).where(UserModel.id == id_user))
             user = user.scalars().first()
