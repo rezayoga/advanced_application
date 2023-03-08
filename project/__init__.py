@@ -5,6 +5,7 @@ from rich.console import Console
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import WebSocketEndpoint
+from starlette.types import ASGIApp, Scope, Receive, Send
 
 from project import database
 from project.config import settings
@@ -37,6 +38,20 @@ def create_app() -> FastAPI:
     @app.on_event("shutdown")
     async def shutdown_event():
         await database.disconnect()
+
+    class WebSocketManagerEventMiddleware:  # pylint: disable=too-few-public-methods
+        """Middleware to add the websocket_manager to the scope."""
+
+        def __init__(self, app: ASGIApp):
+            self._app = app
+            self._websocket_manager = WebSocketManager()
+
+        async def __call__(self, scope: Scope, receive: Receive, send: Send):
+            if scope["type"] in ("lifespan", "http", "websocket"):
+                scope["websocket_manager"] = self._websocket_manager
+            await self._app(scope, receive, send)
+
+    app.add_middleware(WebSocketManagerEventMiddleware)
 
     @app.get("/")
     async def root():
