@@ -145,12 +145,15 @@ def create_app() -> FastAPI:
 
             self.session = session.get_connection()
 
-            user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
-            user = user.scalars().first()
-            user_id = user.id
-            console.print(f"User {user_id} connected!")
-            if user is None:
-                console.print(f"User {id_user} not found!")
+            inspect(self.session, methods=True)
+            console.print(f"Session: {self.session}")
+
+            # user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
+            # user = user.scalars().first()
+            # user_id = user.id
+            # console.print(f"User {user_id} connected!")
+            # if user is None:
+            #     console.print(f"User {id_user} not found!")
 
         async def on_receive(self, websocket: WebSocket, vote: VoteSchema):
             await websocket.send_json({"type": "USER_JOIN", "data": vote})
