@@ -146,7 +146,7 @@ def create_app() -> FastAPI:
             self.session = session.get_connection()
 
             inspect(self.session, methods=True)
-            console.print(f"Session: {self.session}")
+            console.print(f"Session: {self.session} - User ID: {id_user}")
 
             # user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
             # user = user.scalars().first()
