@@ -128,9 +128,9 @@ def create_app() -> FastAPI:
             super().__init__(*args, **kwargs)
             self.websocket_manager: WebSocketManager = None
             self.user_id: str = None
-            self.session: AsyncSession = None
+            self.session: AsyncSession = get_session()
 
-        async def on_connect(self, websocket: WebSocket, session: DBConnectionService = None):
+        async def on_connect(self, websocket: WebSocket):
             global wm
             _wm = self.scope.get("websocket_manager")
             if _wm is None:
@@ -140,10 +140,8 @@ def create_app() -> FastAPI:
             await websocket.accept()
             id_user = websocket.path_params['id']
 
-            if session is None:
-                session = DBConnectionService()
-
-            self.session = session.get_connection()
+            if self.session is None:
+                self.session = DBConnectionService().get_connection()
 
             inspect(self.session, methods=True)
             console.print(f"Session: {self.session} - User ID: {id_user}")
