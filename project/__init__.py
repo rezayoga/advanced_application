@@ -148,7 +148,7 @@ def create_app() -> FastAPI:
             inspect(self.session, methods=True)
             console.print(f"Session: {self.session} - User ID: {id_user}")
 
-            # user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
+            user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
             # user = user.scalars().first()
             # user_id = user.id
             # console.print(f"User {user_id} connected!")
