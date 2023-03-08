@@ -6,8 +6,7 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
-    DATABASE_URL: str = os.environ.get("DATABASE_URL",
-                                       f"postgresql+asyncpg://reza:rezareza@rezayogaswara.com:5432/db_advanced_application")
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "postgresql+asyncpg://reza:rezareza@rezayogaswara.com:5432/db_advanced_application")
 
     DATABASE_CONNECT_DICT: dict = {}
 

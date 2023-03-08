@@ -1,11 +1,13 @@
 from fastapi import FastAPI, WebSocket, Depends
 from fastapi.responses import HTMLResponse
+from rich import inspect
 from rich.console import Console
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import WebSocketEndpoint
 
 from project import database
+from project.config import settings
 from project.core import WebSocketManager
 from project.database import get_session
 from project.polls.models import User as UserModel
@@ -13,6 +15,7 @@ from project.schemas import Vote as VoteSchema
 
 console = Console()
 wm: WebSocketManager = None
+
 
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -26,6 +29,7 @@ def create_app() -> FastAPI:
         # Perform connection
         console.print("=====================================")
         console.print("Connecting to database...", style="bold red")
+        inspect(settings.DATABASE_URL, methods=True)
         console.print("=====================================")
         # send_external_message_sync(queue_name, "Chatbot Webhook API is running")
         await database.connect()
