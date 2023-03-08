@@ -113,6 +113,13 @@ def create_app() -> FastAPI:
             await websocket.send_text(f"{data} - {user_connected}")
             console.print(f"{data}")
 
+    class DBConnectionService:
+        def __init__(self, session: AsyncSession):
+            self.session = session
+
+        def get_connection(self):
+            return self.session
+
     @app.websocket_route("/ws_vote/{id}", name="ws_vote")
     class VoteApp(WebSocketEndpoint):
         encoding = "json"
@@ -122,7 +129,7 @@ def create_app() -> FastAPI:
             self.websocket_manager: WebSocketManager = None
             self.user_id: str = None
 
-        async def on_connect(self, websocket: WebSocket, session: AsyncSession = Depends(get_session)):
+        async def on_connect(self, websocket: WebSocket, session: DBConnectionService = None):
             global wm
             _wm = self.scope.get("websocket_manager")
             if _wm is None:
@@ -131,6 +138,10 @@ def create_app() -> FastAPI:
             wm = self.websocket_manager
             await websocket.accept()
             id_user = websocket.path_params['id']
+
+            if session is None:
+                session = DBConnectionService(session=Depends(get_session))
+
             user = await session.execute(select(UserModel).where(UserModel.id == id_user))
             user = user.scalars().first()
             user_id = user.id
