@@ -114,7 +114,7 @@ def create_app() -> FastAPI:
             console.print(f"{data}")
 
     class DBConnectionService:
-        def __init__(self, session: AsyncSession):
+        def __init__(self, session: AsyncSession = Depends(get_session)):
             self.session = session
 
         def get_connection(self):
@@ -128,8 +128,9 @@ def create_app() -> FastAPI:
             super().__init__(*args, **kwargs)
             self.websocket_manager: WebSocketManager = None
             self.user_id: str = None
+            self.session: AsyncSession = None
 
-        async def on_connect(self, websocket: WebSocket):
+        async def on_connect(self, websocket: WebSocket, session: DBConnectionService = None):
             global wm
             _wm = self.scope.get("websocket_manager")
             if _wm is None:
@@ -139,9 +140,12 @@ def create_app() -> FastAPI:
             await websocket.accept()
             id_user = websocket.path_params['id']
 
-            session = get_session()
+            if session is None:
+                session = DBConnectionService()
 
-            user = await session.execute(select(UserModel).where(UserModel.id == id_user))
+            self.session = session.get_connection()
+
+            user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
             user = user.scalars().first()
             user_id = user.id
             console.print(f"User {user_id} connected!")
