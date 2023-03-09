@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, Depends
+from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from rich import inspect
 from rich.console import Console
@@ -16,6 +16,7 @@ from project.schemas import Vote as VoteSchema
 
 console = Console()
 wm: WebSocketManager = None
+session: AsyncSession = get_session()
 
 
 def create_app() -> FastAPI:
@@ -101,10 +102,7 @@ def create_app() -> FastAPI:
     """
 
     @app.get("/ws_client")
-    async def get(session: AsyncSession = Depends(get_session)):
-        user = await session.execute(select(UserModel).where(UserModel.id == 1))
-        user = user.scalars().first()
-        console.print(user)
+    async def get():
         return HTMLResponse(html)
 
     @app.websocket("/ws/{id}")
@@ -125,7 +123,7 @@ def create_app() -> FastAPI:
             self.websocket_manager: WebSocketManager = None
             self.user_id: str = None
 
-        async def on_connect(self, websocket: WebSocket, session: AsyncSession = Depends(get_session)):
+        async def on_connect(self, websocket: WebSocket):
             global wm
             _wm = self.scope.get("websocket_manager")
             if _wm is None:
