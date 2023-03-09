@@ -121,9 +121,8 @@ def create_app() -> FastAPI:
             super().__init__(*args, **kwargs)
             self.websocket_manager: WebSocketManager = None
             self.user_id: str = None
-            self.session: AsyncSession = Depends(get_session)
 
-        async def on_connect(self, websocket: WebSocket):
+        async def on_connect(self, websocket: WebSocket, session: AsyncSession = Depends(get_session)):
             global wm
             _wm = self.scope.get("websocket_manager")
             if _wm is None:
@@ -133,10 +132,10 @@ def create_app() -> FastAPI:
             await websocket.accept()
             id_user = websocket.path_params['id']
 
-            inspect(self.session, methods=True)
-            console.print(f"Session: {self.session} - User ID: {id_user}")
+            inspect(session, methods=True)
+            console.print(f"Session: {session} - User ID: {id_user}")
 
-            user = await self.session.execute(select(UserModel).where(UserModel.id == id_user))
+            user = await session.execute(select(UserModel).where(UserModel.id == id_user))
             # user = user.scalars().first()
             # user_id = user.id
             # console.print(f"User {user_id} connected!")
