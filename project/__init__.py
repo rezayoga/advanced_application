@@ -101,7 +101,10 @@ def create_app() -> FastAPI:
     """
 
     @app.get("/ws_client")
-    async def get():
+    async def get(session: AsyncSession = Depends(get_session)):
+        user = await session.execute(select(UserModel).where(UserModel.id == 1))
+        user = user.scalars().first()
+        console.print(user)
         return HTMLResponse(html)
 
     @app.websocket("/ws/{id}")
