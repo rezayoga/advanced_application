@@ -144,7 +144,7 @@ def create_app() -> FastAPI:
                     user_id = user.id
                     console.print(f"User {user_id} - {user.name} connected!")
                     self.websocket_manager.add_user(user_id, websocket)
-                    await self.websocket_manager.broadcast_by_user_id(u, {"type": "USER_JOIN",
+                    await self.websocket_manager.broadcast_by_user(u, {"type": "USER_JOIN",
                                                                     "data": {"user_id": user_id, "name": user.name}})
                     if user is None:
                         console.print(f"User {id_} not found!")

@@ -27,7 +27,7 @@ class WebSocketManager:
         """
         return self._users.get(user)
 
-    async def broadcast_by_user_id(self, user: User, message: Any):
+    async def broadcast_by_user(self, user: User, message: Any):
         """Broadcast message to all connected users.
         """
         # m = VoteCount.parse_obj(message)
