@@ -30,9 +30,9 @@ class WebSocketManager:
     async def broadcast_by_user_id(self, user: User, message: Any):
         """Broadcast message to all connected users.
         """
-        m = VoteCount.parse_obj(message)
-        if m:
-            await self._users[user].send_json(m.dict())
+        # m = VoteCount.parse_obj(message)
+        if message:
+            await self._users[user].send_json(message.dict())
 
     async def broadcast_user_joined(self, user: User):
         """Broadcast message to all connected users.
@@ -49,7 +49,7 @@ class WebSocketManager:
     async def broadcast_all_users(self, message: Any):
         """Broadcast message to all connected users.
         """
-        m = VoteCount.parse_obj(message)
-        if m:
+        # m = VoteCount.parse_obj(message)
+        if message:
             for websocket in self._users.values():
-                await websocket.send_json(m.dict())
+                await websocket.send_json(message.dict())
