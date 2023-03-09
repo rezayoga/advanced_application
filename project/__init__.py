@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from rich import inspect
@@ -93,7 +95,7 @@ def create_app() -> FastAPI:
 		                };
 	                    ws.onopen = function(event) {
 	                        const d = new Date();
-	                        ws.send(`{"user_id": ${id}, "vote": "1", "timestamp": "${d.toISOString()}"}`);
+	                        # ws.send(`{"user_id": ${id}, "vote": "1", "timestamp": "${d.toISOString()}"}`);
                         };
 	                }
 	            }
@@ -148,12 +150,9 @@ def create_app() -> FastAPI:
                     if user is None:
                         console.print(f"User {id_} not found!")
 
-        async def on_receive(self, websocket: WebSocket, vote: VoteSchema):
+        async def on_receive(self, websocket: WebSocket, message: Any):
             # await websocket.send_json({"type": "USER_JOIN", "data": vote})
-            # console.print(f"{vote}")
-            if self.user_id is None:
-                self.user_id = vote.user_id
-                self.websocket_manager.add_user(self.user_id, websocket)
+            console.print(f"{message}")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             console.print(f"User disconnected!")
