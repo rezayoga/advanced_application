@@ -16,7 +16,7 @@ from project.schemas import Vote as VoteSchema
 
 console = Console()
 wm: WebSocketManager = None
-session: AsyncSession = get_session()
+engine = database.engine
 
 
 def create_app() -> FastAPI:
@@ -133,15 +133,15 @@ def create_app() -> FastAPI:
             await websocket.accept()
             id_user = websocket.path_params['id']
 
-            inspect(session, methods=True)
-            console.print(f"Session: {session} - User ID: {id_user}")
-
-            user = await session.execute(select(UserModel).where(UserModel.id == id_user))
-            # user = user.scalars().first()
-            # user_id = user.id
-            # console.print(f"User {user_id} connected!")
-            # if user is None:
-            #     console.print(f"User {id_user} not found!")
+            async with engine.connect() as conn:
+                async with conn.begin():
+                    session = AsyncSession(conn)
+                    user = await session.execute(select(UserModel).where(UserModel.id == id_user))
+                    user = user.scalars().first()
+                    user_id = user.id
+                    console.print(f"User {user_id} connected!")
+                    if user is None:
+                        console.print(f"User {id_user} not found!")
 
         async def on_receive(self, websocket: WebSocket, vote: VoteSchema):
             await websocket.send_json({"type": "USER_JOIN", "data": vote})
