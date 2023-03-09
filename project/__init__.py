@@ -139,7 +139,7 @@ def create_app() -> FastAPI:
                     user = await session.execute(select(UserModel).where(UserModel.id == int(id_user)))
                     user = user.scalars().first()
                     user_id = user.id
-                    console.print(f"User {user_id} connected!")
+                    console.print(f"User {user_id} - {user.name} connected!")
                     if user is None:
                         console.print(f"User {id_user} not found!")
 
