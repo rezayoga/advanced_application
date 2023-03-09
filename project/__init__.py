@@ -136,7 +136,7 @@ def create_app() -> FastAPI:
             async with engine.connect() as conn:
                 async with conn.begin():
                     session = AsyncSession(conn)
-                    user = await session.execute(select(UserModel).where(UserModel.id == id_user))
+                    user = await session.execute(select(UserModel).where(UserModel.id == int(id_user)))
                     user = user.scalars().first()
                     user_id = user.id
                     console.print(f"User {user_id} connected!")
