@@ -95,7 +95,6 @@ def create_app() -> FastAPI:
 		                };
 	                    ws.onopen = function(event) {
 	                        const d = new Date();
-	                        # ws.send(`{"user_id": ${id}, "vote": "1", "timestamp": "${d.toISOString()}"}`);
                         };
 	                }
 	            }
