@@ -151,7 +151,7 @@ def create_app() -> FastAPI:
                         console.print(f"User {id_} not found!")
 
         async def on_receive(self, websocket: WebSocket, message: Any):
-            # await websocket.send_json({"type": "USER_JOIN", "data": vote})
+            await websocket.send_json({"type": "USER_JOIN", "data": message})
             console.print(f"{message}")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
