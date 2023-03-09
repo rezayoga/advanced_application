@@ -12,7 +12,7 @@ from project.config import settings
 from project.core import WebSocketManager
 from project.database import get_session
 from project.polls.models import User as UserModel
-from project.schemas import Vote as VoteSchema
+from project.schemas import Vote as VoteSchema, User as UserSchema
 
 console = Console()
 wm: WebSocketManager = None
@@ -74,6 +74,7 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
+	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
 	        <div id="messages"></div>
 	        <script type="text/javascript">
 	            var ws = null;
@@ -131,22 +132,28 @@ def create_app() -> FastAPI:
             self.websocket_manager = _wm
             wm = self.websocket_manager
             await websocket.accept()
-            id_user = websocket.path_params['id']
+            id_ = websocket.path_params['id']
 
             async with engine.connect() as conn:
                 async with conn.begin():
                     session = AsyncSession(conn)
-                    user = await session.execute(select(UserModel).where(UserModel.id == int(id_user)))
+                    user = await session.execute(select(UserModel).where(UserModel.id == int(id_)))
                     user = user.scalars().first()
+                    u = UserSchema(id=user.id, name=user.name)
                     user_id = user.id
                     console.print(f"User {user_id} - {user.name} connected!")
+                    self.websocket_manager.add_user(user_id, websocket)
+                    self.websocket_manager.broadcast_by_user_id(u, {"type": "USER_JOIN",
+                                                                    "data": {"user_id": user_id, "name": user.name}})
                     if user is None:
-                        console.print(f"User {id_user} not found!")
+                        console.print(f"User {id_} not found!")
 
         async def on_receive(self, websocket: WebSocket, vote: VoteSchema):
             # await websocket.send_json({"type": "USER_JOIN", "data": vote})
             # console.print(f"{vote}")
-            pass
+            if self.user_id is None:
+                self.user_id = vote.user_id
+                self.websocket_manager.add_user(self.user_id, websocket)
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             console.print(f"User disconnected!")

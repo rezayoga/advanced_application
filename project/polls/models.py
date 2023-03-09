@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey
+from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, DateTime, func
 
 from project.database import Base
 
@@ -35,6 +35,7 @@ class Vote(Base):
     poll_id = Column(Integer, nullable=False, index=True)
     option_id = Column(Integer, nullable=False, index=True)
     user_id = Column(Integer, nullable=False, index=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
 
     def __init__(self, poll_id, option_id, user_id):
         self.poll_id = poll_id

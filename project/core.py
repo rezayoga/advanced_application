@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 
 from starlette.websockets import WebSocket
 
@@ -27,12 +27,12 @@ class WebSocketManager:
         """
         return self._users.get(user)
 
-    async def broadcast_by_user_id(self, user: User, vote_count: VoteCount):
+    async def broadcast_by_user_id(self, user: User, message: Any):
         """Broadcast message to all connected users.
         """
-        vote_count = VoteCount.parse_obj(vote_count)
-        if vote_count:
-            await self._users[user].send_json(vote_count.dict())
+        m = VoteCount.parse_obj(message)
+        if m:
+            await self._users[user].send_json(m.dict())
 
     async def broadcast_user_joined(self, user: User):
         """Broadcast message to all connected users.
@@ -46,10 +46,10 @@ class WebSocketManager:
         if user:
             await self._users[user].send_json(user.dict())
 
-    async def broadcast_all_users(self, vote_count: VoteCount):
+    async def broadcast_all_users(self, message: Any):
         """Broadcast message to all connected users.
         """
-        vote_count = VoteCount.parse_obj(vote_count)
-        if vote_count:
+        m = VoteCount.parse_obj(message)
+        if m:
             for websocket in self._users.values():
-                await websocket.send_json(vote_count.dict())
+                await websocket.send_json(m.dict())
