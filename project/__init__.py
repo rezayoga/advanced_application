@@ -140,12 +140,12 @@ def create_app() -> FastAPI:
                     session = AsyncSession(conn)
                     user = await session.execute(select(UserModel).where(UserModel.id == int(id_)))
                     user = user.scalars().first()
-                    u = UserSchema(id=user.id, name=user.name)
-                    user_id = user.id
-                    console.print(f"User {user_id} - {user.name} connected!")
-                    self.websocket_manager.add_user(user_id, websocket)
+                    u = UserSchema.from_orm(user)
+                    # user_id = user.id
+                    # console.print(f"User {user_id} - {user.name} connected!")
+                    self.websocket_manager.add_user(u, websocket)
                     await self.websocket_manager.broadcast_by_user(u, {"type": "USER_JOIN",
-                                                                    "data": {"user_id": user_id, "name": user.name}})
+                                                                       "data": {"user_id": u.id, "name": u.name}})
                     if user is None:
                         console.print(f"User {id_} not found!")
 
