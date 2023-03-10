@@ -150,8 +150,8 @@ def create_app() -> FastAPI:
 
                     if user is not None:
                         self.websocket_manager.add_user(u.id, u.name, websocket)
-                        await self.websocket_manager.broadcast_json(
-                            {"type": "USER_JOIN", "data": u.dict()}
+                        await self.websocket_manager.broadcast_all_users(
+                            {"type": "USER_JOIN", "data": u.name}
                         )
                         user_id = user.id
                         self.user_id = user_id
