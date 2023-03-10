@@ -36,26 +36,7 @@ class WebSocketManager:
     async def broadcast_by_user_id(self, user_id: str, payload: Any):
         """Broadcast message to all connected users.
         """
-        if payload:
-            await self._users[user_id].send_json(payload)
-
-    async def broadcast_user_joined(self):
-        """Broadcast message to all connected users.
-        """
-        for user_id, websocket in self._users.items():
-            await websocket.send_json({
-                "type": "user_joined",
-                "user": self._user_meta[user_id]
-            })
-
-    async def broadcast_user_left(self):
-        """Broadcast message to all connected users.
-        """
-        for user_id, websocket in self._users.items():
-            await websocket.send_json({
-                "type": "user_left",
-                "user": self._user_meta[user_id]
-            })
+        await self._users[user_id].send_json(jsonable_encoder(payload))
 
     async def broadcast_all_users(self, payload: Any):
         """Broadcast message to all connected users.
