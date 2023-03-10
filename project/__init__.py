@@ -100,7 +100,7 @@ def create_app() -> FastAPI:
 	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
 	                        function myFunction() {
                               document.getElementById("btn-vote-1").disabled = true;
-                              ws.send("Vote 1 for user " + id + " at " + d.toLocaleTimeString());
+                              ws.send({ "vote": 1, "user_id": id });
                             }
                         };
 	                }
