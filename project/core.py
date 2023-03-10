@@ -39,7 +39,7 @@ class WebSocketManager:
         if payload:
             await self._users[user_id].send_json(payload)
 
-    async def broadcast_user_joined(self, user_id: str):
+    async def broadcast_user_joined(self):
         """Broadcast message to all connected users.
         """
         for user_id, websocket in self._users.items():
@@ -48,7 +48,7 @@ class WebSocketManager:
                 "user": self._user_meta[user_id]
             })
 
-    async def broadcast_user_left(self, user_id: str):
+    async def broadcast_user_left(self):
         """Broadcast message to all connected users.
         """
         for user_id, websocket in self._users.items():
