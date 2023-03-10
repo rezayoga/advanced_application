@@ -154,7 +154,7 @@ def create_app() -> FastAPI:
                         #     {"type": "USER_JOIN", "data": u.name}
                         # )
 
-                        self.websocket_manager.broadcast_user_joined()
+                        await self.websocket_manager.broadcast_user_joined()
                         user_id = user.id
                         self.user_id = user_id
                         console.print(f"User {user_id} - {user.name} connected!")
