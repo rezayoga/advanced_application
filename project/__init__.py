@@ -92,6 +92,9 @@ def create_app() -> FastAPI:
 		                    var content = document.createTextNode(event.data);
 		                    message.appendChild(content);
 		                    messages.appendChild(message);
+		                    
+		                    document.getElementById("btn-vote-1").disabled = false;
+		                    
 		                };
 	                    ws.onopen = function(event) {
 	                        const d = new Date();
