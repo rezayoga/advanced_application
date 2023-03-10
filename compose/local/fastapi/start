@@ -4,4 +4,4 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000 --log-level debug
+uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000 --log-level debug --ws-ping-interval 5 --ws-ping-timeout 5
