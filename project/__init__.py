@@ -143,11 +143,20 @@ def create_app() -> FastAPI:
                     u = UserSchema.from_orm(user)
                     # user_id = user.id
                     # console.print(f"User {user_id} - {user.name} connected!")
-                    self.websocket_manager.add_user(u, websocket)
-                    await self.websocket_manager.broadcast_by_user(u, {"type": "USER_JOIN",
-                                                                       "data": {"user_id": u.id, "name": u.name}})
-                    if user is None:
-                        console.print(f"User {id_} not found!")
+                    # self.user_id = user_id
+                    # await self.websocket_manager.broadcast_json(
+                    #     {"type": "USER_JOIN", "data": u.dict()}
+                    # )
+
+                    if user is not None:
+                        self.websocket_manager.add_user(u.id, u.name, websocket)
+                        await self.websocket_manager.broadcast_json(
+                            {"type": "USER_JOIN", "data": u.dict()}
+                        )
+                        user_id = user.id
+                        self.user_id = user_id
+                        console.print(f"User {user_id} - {user.name} connected!")
+
 
         async def on_receive(self, websocket: WebSocket, message: Any):
             await websocket.send_json({"type": "USER_JOIN", "data": message})

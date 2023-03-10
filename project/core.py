@@ -8,48 +8,61 @@ from project.schemas import User, VoteCount
 class WebSocketManager:
 
     def __init__(self):
-        self._users: Dict[User, WebSocket] = {}
+        self._users: Dict[str, WebSocket] = {}
+        self._user_meta: Dict[str, User] = {}
 
     def __len__(self) -> int:
         return len(self._users)
 
-    def add_user(self, user: User, websocket: WebSocket):
-        if user in self._users:
-            self.remove_user(user)
-        self._users[user] = websocket
+    def add_user(self, user_id: str, user_name: str, websocket: WebSocket):
+        if user_id in self._users:
+            self.remove_user(user_id)
+        self._users[user_id] = websocket
+        self._user_meta[user_id] = User(
+            id=user_id, name=user_name
+        )
 
-    def remove_user(self, user: User):
-        if user in self._users:
-            self._users.pop(user)
+    def remove_user(self, user_id: str):
+        if user_id in self._users:
+            self._users.pop(user_id)
+            self._user_meta.pop(user_id)
 
-    def get_user(self, user: User) -> Optional[User]:
+    def get_user(self, user_id: str) -> Optional[User]:
         """Get metadata on a user.
         """
-        return self._users.get(user)
+        return self._user_meta.get(user_id)
 
-    async def broadcast_by_user(self, user: User, message: Any):
+    async def broadcast_by_user_id(self, user_id: str, payload: Any):
         """Broadcast message to all connected users.
         """
-        # m = VoteCount.parse_obj(message)
-        if message:
-            await self._users[user].send_json(message.dict())
+        if payload:
+            await self._users[user_id].send_json(payload)
 
-    async def broadcast_user_joined(self, user: User):
+    async def broadcast_user_joined(self, user_id: str):
         """Broadcast message to all connected users.
         """
-        if user:
-            await self._users[user].send_json(user.dict())
+        for user_id, websocket in self._users.items():
+            await websocket.send_json({
+                "type": "user_joined",
+                "user": self._user_meta[user_id]
+            })
 
-    async def broadcast_user_left(self, user: User):
+    async def broadcast_user_left(self, user_id: str):
         """Broadcast message to all connected users.
         """
-        if user:
-            await self._users[user].send_json(user.dict())
+        for user_id, websocket in self._users.items():
+            await websocket.send_json({
+                "type": "user_left",
+                "user": self._user_meta[user_id]
+            })
 
-    async def broadcast_all_users(self, message: Any):
+    async def broadcast_all_users(self, payload: Any):
         """Broadcast message to all connected users.
         """
-        # m = VoteCount.parse_obj(message)
-        if message:
-            for websocket in self._users.values():
-                await websocket.send_json(message.dict())
+        for user_id, websocket in self._users.items():
+            await websocket.send_json({
+                "type": "all_users",
+                "users": self._user_meta
+            })
+
+
