@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Any
 
+from fastapi.encoders import jsonable_encoder
 from starlette.websockets import WebSocket
 
 from project.schemas import User, VoteCount
@@ -60,9 +61,6 @@ class WebSocketManager:
         """Broadcast message to all connected users.
         """
         for user_id, websocket in self._users.items():
-            await websocket.send_json({
-                "type": "all_users",
-                "users": self._user_meta
-            })
+            await websocket.send_json(jsonable_encoder(payload))
 
 
