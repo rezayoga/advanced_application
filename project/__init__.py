@@ -103,6 +103,7 @@ def create_app() -> FastAPI:
 	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
 	                        function myFunction() {
                               alert("Hello! I am an alert box!");
+                              document.getElementById("btn-vote-1").disabled = true;
                             }
                         };
 	                }
