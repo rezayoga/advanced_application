@@ -174,6 +174,14 @@ def create_app() -> FastAPI:
                     # )
 
                     if user is not None:
+
+                        if self.user_id is not None:
+                            # await self.websocket_manager.broadcast_all_users(
+                            #     {"type": "user_leave", "data": self.user_id}
+                            # )
+                            self.websocket_manager.remove_user(self.user_id)
+                            console.print(f"User {self.user_id} disconnected!")
+
                         self.websocket_manager.add_user(u.id, u.name, websocket)
                         await self.websocket_manager.broadcast_all_users(
                             {"type": "user_join", "data": u.name}
@@ -186,7 +194,7 @@ def create_app() -> FastAPI:
         async def on_receive(self, websocket: WebSocket, message: Any):
             if self.user_id is None:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
-            
+
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
                 # await self.websocket_manager.broadcast_all_users(
