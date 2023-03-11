@@ -112,8 +112,10 @@ def create_app() -> FastAPI:
     async def ws_client(session: AsyncSession = Depends(get_session)):
 
         """ Select poll with all options """
-        polls = await session.execute(text("SELECT * FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
-        p = polls.scalars().all()
+        polls = await session.execute(
+            text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
+                 " FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
+        p = polls.fetchall()
 
         if p:
             console.print(p)
