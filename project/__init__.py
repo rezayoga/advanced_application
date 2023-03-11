@@ -205,5 +205,6 @@ def create_app() -> FastAPI:
                 # )
                 self.websocket_manager.remove_user(self.user_id)
                 console.print(f"User {self.user_id} disconnected!")
+                websocket.close()
 
     return app
