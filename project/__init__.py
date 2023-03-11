@@ -115,10 +115,10 @@ def create_app() -> FastAPI:
         polls = await session.execute(
             text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
                  " FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
-        p = polls.fetchall()
-
-        if p:
-            console.print([r._asdict() for r in p])
+        polls = polls.fetchall()
+        if polls:
+            data = [_._asdict() for _ in polls]
+            console.print(data)
 
         return HTMLResponse(html)
 
