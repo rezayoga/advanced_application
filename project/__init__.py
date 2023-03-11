@@ -166,23 +166,19 @@ def create_app() -> FastAPI:
                     user = await session.execute(select(UserModel).where(UserModel.id == id_))
                     user = user.scalars().first()
                     u = UserSchema.from_orm(user)
-                    # user_id = user.id
-                    # console.print(f"User {user_id} - {user.name} connected!")
-                    # self.user_id = user_id
-                    # await self.websocket_manager.broadcast_json(
-                    #     {"type": "USER_JOIN", "data": u.dict()}
-                    # )
 
                     if user is not None:
 
                         if self.user_id is not None:
-                            # await self.websocket_manager.broadcast_all_users(
-                            #     {"type": "user_leave", "data": self.user_id}
-                            # )
                             self.websocket_manager.remove_user(self.user_id)
                             console.print(f"User {self.user_id} disconnected!")
 
                         self.websocket_manager.add_user(u.id, u.name, websocket)
+
+                        console.print("====================================")
+                        console.print(self.websocket_manager.__len__())
+                        console.print("====================================")
+
                         await self.websocket_manager.broadcast_all_users(
                             {"type": "user_join", "data": u.name}
                         )
