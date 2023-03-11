@@ -113,8 +113,10 @@ def create_app() -> FastAPI:
 
         """ Select poll with all options """
         polls = await session.execute(text("SELECT * FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
-        p = polls.fetchall()
-        console.print(p)
+        p = polls.scalars().all()
+
+        if p:
+            console.print(p)
 
         return HTMLResponse(html)
 
