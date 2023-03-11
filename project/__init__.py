@@ -66,12 +66,11 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Websocket Polling App</title>
 	        <script type="text/javascript">
-	            var ws = null;
-
+                var ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev');
                 function login_user(select_object) {
                     var id = select_object.value;
-                    const ws_url = '/ws_vote/' + id;
-                    let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+                    ws = ws + '/ws_vote/' + id;
+                     + ws_url);
                     if (id !== undefined) {
                         ws.onmessage = function(event) {
                             console.log(event.data);
@@ -83,13 +82,14 @@ def create_app() -> FastAPI:
                 
                             document.getElementById("btn-vote-1").disabled = false;
                         };
+                        event.preventDefault()
                     }
                 }
                 
                 function vote(vote) {
                     ws.send(JSON.stringify({
                         "vote": vote
-                    }));        
+                    }));
                 }
 	        </script>
 	    </head>
