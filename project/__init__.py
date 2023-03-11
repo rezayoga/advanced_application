@@ -85,12 +85,7 @@ def create_app() -> FastAPI:
                                     document.getElementById("btn-vote-1").disabled = false;
                                 };
                                 
-                                ws.onclose = function(event) {
-                                    console.log('Socket is closed. Reconnect will be attempted in 1 second.', event.reason);
-                                    setTimeout(function() {
-                                        login(select_object);
-                                    }, 1000);
-                                };
+                                select_object.disabled = true;
                             }
                         }
 
