@@ -111,6 +111,13 @@ def create_app() -> FastAPI:
     @app.get("/ws_client")
     async def ws_client(session: AsyncSession = Depends(get_session)):
 
+        """ Select users """
+        users = await session.execute(select(UserModel))
+        users = users.fetchall()
+        if users:
+            data = [_._asdict() for _ in users]
+            console.print(data)
+
         """ Select poll with all options """
         polls = await session.execute(
             text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
