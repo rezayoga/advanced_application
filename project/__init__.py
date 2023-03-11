@@ -118,7 +118,7 @@ def create_app() -> FastAPI:
         p = polls.fetchall()
 
         if p:
-            console.print(p)
+            console.print([r._asdict() for r in p])
 
         return HTMLResponse(html)
 
