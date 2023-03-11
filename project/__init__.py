@@ -188,6 +188,11 @@ def create_app() -> FastAPI:
             console.print(f"from on_receive: {message}")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
-            console.print(f"User disconnected!")
+            if self.user_id is not None:
+                await self.websocket_manager.broadcast_all_users(
+                    {"type": "user_leave", "data": self.user_id}
+                )
+                self.websocket_manager.remove_user(self.user_id)
+                console.print(f"User {self.user_id} disconnected!")
 
     return app
