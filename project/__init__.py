@@ -124,7 +124,10 @@ def create_app() -> FastAPI:
         polls = polls.fetchall()
         if polls:
             data = [_._asdict() for _ in polls]
-            console.print(data['option'])
+            for poll in data:
+                html += f"""
+
+                                <h1 id="h1-title">{poll['question']}</h1>"""
 
         html += """
                 	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>"""
