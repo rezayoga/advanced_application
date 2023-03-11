@@ -143,7 +143,7 @@ def create_app() -> FastAPI:
             async with engine.connect() as conn:
                 async with conn.begin():
                     session = AsyncSession(conn)
-                    user = await session.execute(select(UserModel).where(UserModel.id == int(id_)))
+                    user = await session.execute(select(UserModel).where(UserModel.id == id_))
                     user = user.scalars().first()
                     u = UserSchema.from_orm(user)
                     # user_id = user.id
