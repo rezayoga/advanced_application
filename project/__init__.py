@@ -83,15 +83,13 @@ def create_app() -> FastAPI:
                 
                             document.getElementById("btn-vote-1").disabled = false;
                         };
-                
-                        function vote(vote) {
-                            ws.send(JSON.stringify({
-                                "vote": vote
-                            }));
-                
-                
-                        }
                     }
+                }
+                
+                function vote(vote) {
+                    ws.send(JSON.stringify({
+                        "vote": vote
+                    }));        
                 }
 	        </script>
 	    </head>
