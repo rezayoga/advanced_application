@@ -6,7 +6,7 @@ from project.database import Base
 class Poll(Base):
     __tablename__ = "polls"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(128), primary_key=True, default=func.uuid_generate_v4())
     question = Column(String, nullable=False)
 
     def __init__(self, question):
@@ -16,8 +16,8 @@ class Poll(Base):
 class Option(Base):
     __tablename__ = "options"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    poll_id = Column(Integer, ForeignKey("polls.id"), nullable=False, index=True)
+    id = Column(String(128), primary_key=True, default=func.uuid_generate_v4())
+    poll_id = Column(String(128), ForeignKey("polls.id"), nullable=False, index=True)
     option = Column(String, nullable=False)
 
     def __init__(self, poll_id, option):
@@ -31,10 +31,10 @@ class Vote(Base):
         UniqueConstraint("poll_id", "user_id", name="unique_vote"),
     )
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    poll_id = Column(Integer, nullable=False, index=True)
-    option_id = Column(Integer, nullable=False, index=True)
-    user_id = Column(Integer, nullable=False, index=True)
+    id = Column(String(128), primary_key=True, default=func.uuid_generate_v4())
+    poll_id = Column(String(128), nullable=False, index=True)
+    option_id = Column(String(128), nullable=False, index=True)
+    user_id = Column(String(128), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
 
     def __init__(self, poll_id, option_id, user_id):
@@ -46,7 +46,7 @@ class Vote(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(128), primary_key=True, default=func.uuid_generate_v4())
     name = Column(String, nullable=False)
 
     def __init__(self, name):

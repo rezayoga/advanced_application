@@ -67,7 +67,7 @@ def create_app() -> FastAPI:
 	        <title>Websocket Polling App</title>
 	        <script type="text/javascript">
 	            var ws = null;
-                function login_user(select_object) {
+                function login(select_object) {
                     var id = select_object.value;
                     const ws_url = '/ws_vote/' + id;
                     ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
@@ -94,12 +94,12 @@ def create_app() -> FastAPI:
 	    </head>
 	    <body>
 	        <h1 id="h1-title">Users</h1>
-	        <select user_id="select_id" style="width:30%" onchange="login_user(this)">
+	        <select user_id="select_id" style="width:30%" onchange="login(this)">
 	          <option selected="selected" value="-">Select</option>
-			  <option value="1">Foo</option>
-			  <option value="2">Bar</option>
-			  <option value="3">Baz</option>
-			  <option value="4">Unknown</option>
+			  <option value="555c29ce-f878-4296-8776-b8f928cdc61e">Foo</option>
+			  <option value="937e41aa-0513-4e3f-8e00-f559acb5af7d">Bar</option>
+			  <option value="0a1ed18d-eab2-43bf-a844-206bbc93d572">Baz</option>
+			  <option value="0123456789">Unknown</option>
 			</select>
 	        <hr />
 	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
