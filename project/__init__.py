@@ -115,7 +115,8 @@ def create_app() -> FastAPI:
         users = await session.execute(select(UserModel))
         users = users.scalars().all()
         if users:
-            console.print(users)
+            data = [_ for _ in users]
+            console.print(data)
 
         """ Select poll with all options """
         polls = await session.execute(
