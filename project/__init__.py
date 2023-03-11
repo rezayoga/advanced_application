@@ -169,9 +169,9 @@ def create_app() -> FastAPI:
 
                     if user is not None:
 
-                        if self.user_id is not None:
-                            self.websocket_manager.remove_user(self.user_id)
-                            console.print(f"User {self.user_id} disconnected!")
+
+                        self.websocket_manager.remove_user(self.user_id)
+                        console.print(f"User {self.user_id} disconnected!")
 
                         self.websocket_manager.add_user(u.id, u.name, websocket)
 

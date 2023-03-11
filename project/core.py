@@ -41,7 +41,7 @@ class WebSocketManager:
     async def broadcast_all_users(self, payload: Any):
         """Broadcast message to all connected users.
         """
-        for websocket in self._users.values():
+        for user_id, websocket in self._users.items():
             await websocket.send_json(jsonable_encoder(payload))
 
 
