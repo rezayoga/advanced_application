@@ -84,6 +84,13 @@ def create_app() -> FastAPI:
                                     messages.appendChild(message);
                                     document.getElementById("btn-vote-1").disabled = false;
                                 };
+                                
+                                ws.onclose = function(event) {
+                                    console.log('Socket is closed. Reconnect will be attempted in 1 second.', event.reason);
+                                    setTimeout(function() {
+                                        login(select_object);
+                                    }, 1000);
+                                };
                             }
                         }
 
@@ -168,11 +175,6 @@ def create_app() -> FastAPI:
                     u = UserSchema.from_orm(user)
 
                     if user is not None:
-
-
-                        self.websocket_manager.remove_user(self.user_id)
-                        console.print(f"User {self.user_id} disconnected!")
-
                         self.websocket_manager.add_user(u.id, u.name, websocket)
 
                         console.print("====================================")
