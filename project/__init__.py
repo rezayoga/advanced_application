@@ -70,7 +70,7 @@ def create_app() -> FastAPI:
                 function login_user(select_object) {
                     var id = select_object.value;
                     const ws_url = '/ws_vote/' + id;
-                    let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+                    ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
                     if (id !== undefined) {
                         ws.onmessage = function(event) {
                             console.log(event.data);
