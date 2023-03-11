@@ -81,15 +81,7 @@ def create_app() -> FastAPI:
 		                    messages.appendChild(message);
 		                    
 		                    document.getElementById("btn-vote-1").disabled = false;
-		                };
-	                    # ws.onopen = function(event) {
-	                    #     const d = new Date();
-	                    #     document.getElementById("btn-vote-1").onclick = function() {myFunction()};
-	                    #     function myFunction() {
-                        #       document.getElementById("btn-vote-1").disabled = true;
-                        #       ws.send({ "vote": 1, "user_id": id });
-                        #     }
-                        # };
+		                }
 	                }
 	            }
 	            // send message from the form
