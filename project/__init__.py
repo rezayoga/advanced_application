@@ -60,63 +60,67 @@ def create_app() -> FastAPI:
     async def root():
         return {"message": "Hello World!"}
 
-    html = """
-    <!DOCTYPE html>
-	<html>
-	    <head>
-	        <title>Websocket Polling App</title>
-	        <script type="text/javascript">
-	            var ws = null;
-                function login(select_object) {
-                    var id = select_object.value;
-                    const ws_url = '/ws_vote/' + id;
-                    ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
-                    if (id !== undefined) {
-                        ws.onmessage = function(event) {
-                            console.log(event.data);
-                            var messages = document.getElementById('messages');
-                            var message = document.createElement('li');
-                            var content = document.createTextNode(event.data);
-                            message.appendChild(content);
-                            messages.appendChild(message);
-                
-                            document.getElementById("btn-vote-1").disabled = false;
-                        };
-                    }
-                }
-                
-                function vote(vote) {
-                    ws.send(JSON.stringify({
-                        "vote": vote
-                    }));        
-                }
-	        </script>
-	    </head>
-	    <body>
-	        <h1 id="h1-title">Users</h1>
-	        <select user_id="select_id" style="width:30%" onchange="login(this)">
-	          <option selected="selected" value="-">Select</option>
-			  <option value="555c29ce-f878-4296-8776-b8f928cdc61e">Foo</option>
-			  <option value="937e41aa-0513-4e3f-8e00-f559acb5af7d">Bar</option>
-			  <option value="0a1ed18d-eab2-43bf-a844-206bbc93d572">Baz</option>
-			  <option value="0123456789">Unknown</option>
-			</select>
-	        <hr />
-	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
-	        <div id="messages"></div>
-	    </body>
-	</html>
-    """
-
     @app.get("/ws_client")
     async def ws_client(session: AsyncSession = Depends(get_session)):
+
+        html = """
+            <!DOCTYPE html>
+        	<html>
+        	    <head>
+        	        <title>Websocket Polling App</title>
+        	        <script type="text/javascript">
+        	            var ws = null;
+                        function login(select_object) {
+                            var id = select_object.value;
+                            const ws_url = '/ws_vote/' + id;
+                            ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+                            if (id !== undefined) {
+                                ws.onmessage = function(event) {
+                                    console.log(event.data);
+                                    var messages = document.getElementById('messages');
+                                    var message = document.createElement('li');
+                                    var content = document.createTextNode(event.data);
+                                    message.appendChild(content);
+                                    messages.appendChild(message);
+
+                                    document.getElementById("btn-vote-1").disabled = false;
+                                };
+                            }
+                        }
+
+                        function vote(vote) {
+                            ws.send(JSON.stringify({
+                                "vote": vote
+                            }));        
+                        }
+        	        </script>
+        	    </head>
+        	    <body>"""
 
         """ Select users """
         users = await session.execute(select(UserModel))
         users = users.scalars().all()
         if users:
+            html += """
+                                <h1 id="h1-title">Users</h1>
+                                <select user_id="select_id" style="width:30%" onchange="login(this)">
+                                <option selected="selected" value="-">Select</option>
+                                """
             for user in users:
-                console.print(user.id, user.name)
+                html += f"""
+                                  <option value="{user.id}">{user.name}</option>
+                                    """
+
+        html += """
+                			</select>
+                			"""
+
+        html += """<hr />
+                	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
+                	        <div id="messages"></div>
+                	    </body>
+                	</html>
+                    """
 
         """ Select poll with all options """
         polls = await session.execute(
