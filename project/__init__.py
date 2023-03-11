@@ -191,7 +191,7 @@ def create_app() -> FastAPI:
             if self.user_id is None:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
-                await self.websocket_manager.broadcast_by_user_id(
+                await self.websocket_manager.broadcast_by_user_id(self.user_id,
                     {"type": "notification", "data": message}
                 )
 
