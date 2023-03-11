@@ -66,6 +66,7 @@ def create_app() -> FastAPI:
 	    <head>
 	        <title>Websocket Polling App</title>
 	        <script type="text/javascript">
+	            var ws = null;
 	            function login_user(select_object) {
 	                var id = select_object.value;
 	                const ws_url = '/ws_vote/' + id;
@@ -81,16 +82,22 @@ def create_app() -> FastAPI:
 		                    
 		                    document.getElementById("btn-vote-1").disabled = false;
 		                };
-	                    ws.onopen = function(event) {
-	                        const d = new Date();
-	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
-	                        function myFunction() {
-                              document.getElementById("btn-vote-1").disabled = true;
-                              ws.send({ "vote": 1, "user_id": id });
-                            }
-                        };
+	                    # ws.onopen = function(event) {
+	                    #     const d = new Date();
+	                    #     document.getElementById("btn-vote-1").onclick = function() {myFunction()};
+	                    #     function myFunction() {
+                        #       document.getElementById("btn-vote-1").disabled = true;
+                        #       ws.send({ "vote": 1, "user_id": id });
+                        #     }
+                        # };
 	                }
 	            }
+	            // send message from the form
+                document.forms.publish.onsubmit = function() {
+                  socket.send({ "vote": 1, "user_id": 1 });
+                  alert("Message sent");
+                  return false;
+                };
 	        </script>
 	    </head>
 	    <body>
