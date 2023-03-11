@@ -177,7 +177,7 @@ def create_app() -> FastAPI:
                     if user is not None:
                         self.websocket_manager.add_user(u.id, u.name, websocket)
                         await self.websocket_manager.broadcast_all_users(
-                            {"type": "USER_JOIN", "data": u.name}
+                            {"type": "user_join", "data": u.name}
                         )
 
                         user_id = user.id
@@ -185,7 +185,7 @@ def create_app() -> FastAPI:
                         console.print(f"User {user_id} - {user.name} connected!")
 
         async def on_receive(self, websocket: WebSocket, message: Any):
-            await websocket.send_json({"type": "USER_JOIN", "data": message})
+            await websocket.send_json({"type": "notification", "data": message})
             console.print(f"from on_receive: {message}")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
