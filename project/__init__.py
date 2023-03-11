@@ -95,14 +95,15 @@ def create_app() -> FastAPI:
 		                    
 		                    document.getElementById("btn-vote-1").disabled = false;
 		                };
-	                    ws.onopen = function(event) {
-	                        const d = new Date();
+	                    # ws.onopen = function(event) {
+	                    #     
+                        # };
+                        const d = new Date();
 	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
 	                        function myFunction() {
                               document.getElementById("btn-vote-1").disabled = true;
                               ws.send({ "vote": 1, "user_id": id });
                             }
-                        };
 	                }
 	            }
 	        </script>
