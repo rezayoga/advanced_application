@@ -190,6 +190,9 @@ def create_app() -> FastAPI:
                         user_id = user.id
                         self.user_id = user_id
                         console.print(f"User {user_id} - {user.name} connected!")
+                    else:
+                        await websocket.send_json({"type": "error", "data": "User not found!"})
+                        await websocket.close()
 
         async def on_receive(self, websocket: WebSocket, message: Any):
             if self.user_id is None:
