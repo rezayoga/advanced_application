@@ -82,14 +82,12 @@ def create_app() -> FastAPI:
 		                    
 		                    document.getElementById("btn-vote-1").disabled = false;
 		                };
-	                    ws.onopen = function(event) {
-	                        const d = new Date();
-	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
-	                        function myFunction() {
-                              document.getElementById("btn-vote-1").disabled = true;
-                              ws.send({ "vote": 1, "user_id": id });
-                            }
-                        };
+	                    function vote(vote) {
+	                        ws.send(JSON.stringify({
+	                            "vote": vote
+                            }));
+                                
+                        
 	                }
 	            }
 	        </script>
@@ -104,10 +102,7 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
-	        <form name="publish">
-	            <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
-	            <button id="btn-vote-2" disabled onclick="vote(1)">Vote 1</button>
-	        </form>
+	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
 	        <div id="messages"></div>
 	    </body>
 	</html>
