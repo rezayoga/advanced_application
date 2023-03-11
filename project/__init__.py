@@ -186,7 +186,7 @@ def create_app() -> FastAPI:
 
         async def on_receive(self, websocket: WebSocket, message: Any):
             await websocket.send_json({"type": "USER_JOIN", "data": message})
-            console.print(f"{message}")
+            console.print(f"from on_receive: {message}")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             console.print(f"User disconnected!")
