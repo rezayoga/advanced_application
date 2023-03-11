@@ -70,7 +70,6 @@ def create_app() -> FastAPI:
                 function login_user(select_object) {
                     var id = select_object.value;
                     ws = ws + '/ws_vote/' + id;
-                     + ws_url);
                     if (id !== undefined) {
                         ws.onmessage = function(event) {
                             console.log(event.data);
