@@ -67,29 +67,32 @@ def create_app() -> FastAPI:
 	        <title>Websocket Polling App</title>
 	        <script type="text/javascript">
 	            var ws = null;
-	            function login_user(select_object) {
-	                var id = select_object.value;
-	                const ws_url = '/ws_vote/' + id;
-	                let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
-	                if (id !== undefined) {
-					    ws.onmessage = function(event) {
-		                    console.log(event.data);
-		                    var messages = document.getElementById('messages');
-		                    var message = document.createElement('li');
-		                    var content = document.createTextNode(event.data);
-		                    message.appendChild(content);
-		                    messages.appendChild(message);
-		                    
-		                    document.getElementById("btn-vote-1").disabled = false;
-		                };
-	                    function vote(vote) {
-	                        ws.send(JSON.stringify({
-	                            "vote": vote
+
+                function login_user(select_object) {
+                    var id = select_object.value;
+                    const ws_url = '/ws_vote/' + id;
+                    let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+                    if (id !== undefined) {
+                        ws.onmessage = function(event) {
+                            console.log(event.data);
+                            var messages = document.getElementById('messages');
+                            var message = document.createElement('li');
+                            var content = document.createTextNode(event.data);
+                            message.appendChild(content);
+                            messages.appendChild(message);
+                
+                            document.getElementById("btn-vote-1").disabled = false;
+                        };
+                
+                        function vote(vote) {
+                            ws.send(JSON.stringify({
+                                "vote": vote
                             }));
-                                
-                        
-	                }
-	            }
+                
+                
+                        }
+                    }
+                }
 	        </script>
 	    </head>
 	    <body>
