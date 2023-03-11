@@ -68,7 +68,7 @@ def create_app() -> FastAPI:
 	    </head>
 	    <body>
 	        <h1 id="h1-title">Users</h1>
-	        <select user_id="select_id" style="width:30%">
+	        <select user_id="select_id" style="width:30%" onchange="login_user(this)">
 	          <option selected="selected" value="-">Select</option>
 			  <option value="1">Foo</option>
 			  <option value="2">Bar</option>
@@ -83,39 +83,31 @@ def create_app() -> FastAPI:
 	        <div id="messages"></div>
 	        <script type="text/javascript">
 	            let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
-	            var user_id = document.getElementById('select_id');
-	            //Attach the event listener to the element
-                user_id.addEventListener('change', (event) => {
-                    //Write the definition of your function
-                    //It will be executed when change event will be fired
-                    alert(event.value);
-                });
-	            
-	            # function login_user(select_object) {
-	            #     var id = select_object.value;
-	            #     const ws_url = '/ws_vote/' + id;
-				#     
-	            #     if (id !== undefined) {
-				# 	    ws.onmessage = function(event) {
-		        #             console.log(event.data);
-		        #             var messages = document.getElementById('messages');
-		        #             var message = document.createElement('li');
-		        #             var content = document.createTextNode(event.data);
-		        #             message.appendChild(content);
-		        #             messages.appendChild(message);
-		        #             
-		        #             document.getElementById("btn-vote-1").disabled = false;
-		        #         };
-	            #         ws.onopen = function(event) {
-	            #             const d = new Date();
-	            #             document.getElementById("btn-vote-1").onclick = function() {myFunction()};
-	            #             function myFunction() {
-                #               document.getElementById("btn-vote-1").disabled = true;
-                #               ws.send({ "vote": 1, "user_id": id });
-                #             }
-                #         };
-	            #     }
-	            # }
+	            function login_user(select_object) {
+	                var id = select_object.value;
+	                const ws_url = '/ws_vote/' + id;
+				    
+	                if (id !== undefined) {
+					    ws.onmessage = function(event) {
+		                    console.log(event.data);
+		                    var messages = document.getElementById('messages');
+		                    var message = document.createElement('li');
+		                    var content = document.createTextNode(event.data);
+		                    message.appendChild(content);
+		                    messages.appendChild(message);
+		                    
+		                    document.getElementById("btn-vote-1").disabled = false;
+		                };
+	                    ws.onopen = function(event) {
+	                        const d = new Date();
+	                        document.getElementById("btn-vote-1").onclick = function() {myFunction()};
+	                        function myFunction() {
+                              document.getElementById("btn-vote-1").disabled = true;
+                              ws.send({ "vote": 1, "user_id": id });
+                            }
+                        };
+	                }
+	            }
 	        </script>
 	    </body>
 	</html>
