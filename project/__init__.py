@@ -116,13 +116,7 @@ def create_app() -> FastAPI:
                 			</select>
                 			"""
 
-        html += """<hr />
-                	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
-                	        <div id="messages"></div>
-                	    </body>
-                	</html>
-                    """
-
+        html += """<hr />"""
         """ Select poll with all options """
         polls = await session.execute(
             text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
@@ -130,7 +124,16 @@ def create_app() -> FastAPI:
         polls = polls.fetchall()
         if polls:
             data = [_._asdict() for _ in polls]
-            console.print(data)
+            console.print(data['option'])
+
+        html += """
+                	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>"""
+
+        html += """
+                	        <div id="messages"></div>
+                	    </body>
+                	</html>
+                    """
 
         return HTMLResponse(html)
 
@@ -192,9 +195,8 @@ def create_app() -> FastAPI:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
                 await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                    {"type": "notification", "data": message}
-                )
-
+                                                                  {"type": "notification", "data": message}
+                                                                  )
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
