@@ -123,7 +123,7 @@ def create_app() -> FastAPI:
         if polls:
             data = [_._asdict() for _ in polls]
             for poll in data:
-                html += f"""<button id="btn-vote-1" disabled onclick="vote()">{poll['p']}</button>"""
+                html += f"""<button id=\"btn-vote-1\" disabled onclick=\"vote()\">{poll['p']}</button>"""
 
 
 
