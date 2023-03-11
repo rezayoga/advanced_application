@@ -76,14 +76,17 @@ def create_app() -> FastAPI:
 			  <option value="4">Unknown</option>
 			</select>
 	        <hr />
-	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
+	        <form name="publish">
+	            <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>
+	            <button id="btn-vote-2" disabled onclick="vote(1)">Vote 1</button>
+	        </form>
 	        <div id="messages"></div>
 	        <script type="text/javascript">
-	            var ws = null;
+	            let ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
 	            function login_user(select_object) {
 	                var id = select_object.value;
 	                const ws_url = '/ws_vote/' + id;
-				    ws = new WebSocket((location.protocol === 'https:' ? 'wss' : 'ws') + '://app.rezayogaswara.dev' + ws_url);
+				    
 	                if (id !== undefined) {
 					    ws.onmessage = function(event) {
 		                    console.log(event.data);
