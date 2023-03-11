@@ -1,10 +1,10 @@
 from typing import Any
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Depends
 from fastapi.responses import HTMLResponse
 from rich import inspect
 from rich.console import Console
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.endpoints import WebSocketEndpoint
 from starlette.types import ASGIApp, Scope, Receive, Send
@@ -109,7 +109,13 @@ def create_app() -> FastAPI:
     """
 
     @app.get("/ws_client")
-    async def get():
+    async def ws_client(session: AsyncSession = Depends(get_session)):
+
+        """ Select poll with all options """
+        polls = await session.execute(text("SELECT * FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
+        p = polls.fetchall()
+        console.print(p)
+
         return HTMLResponse(html)
 
     @app.websocket("/ws/{id}")
