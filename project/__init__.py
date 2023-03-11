@@ -90,9 +90,7 @@ def create_app() -> FastAPI:
                         }
 
                         function vote(vote) {
-                            ws.send(JSON.stringify({
-                                "vote": vote
-                            }));        
+                            ws.send(JSON.stringify(vote));        
                         }
         	        </script>
         	    </head>
@@ -125,12 +123,9 @@ def create_app() -> FastAPI:
         if polls:
             data = [_._asdict() for _ in polls]
             for poll in data:
-                html += f"""
+                html += f"""<button id="btn-vote-1" disabled onclick="vote()">{poll['p']}</button>"""
 
-                                <h1 id="h1-title">{poll['question']}</h1>"""
 
-        html += """
-                	        <button id="btn-vote-1" disabled onclick="vote(1)">Vote 1</button>"""
 
         html += """
                 	        <div id="messages"></div>
