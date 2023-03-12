@@ -103,7 +103,9 @@ def create_app() -> FastAPI:
                         }
 
                         function vote() {
-                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value }));        
+                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value })); 
+                            document.getElementById(\"btn-vote\").disabled = true;
+                            document.getElementById(\"select-poll\").disabled = true;
                         }
         	        </script>
         	    </head>
@@ -127,13 +129,14 @@ def create_app() -> FastAPI:
         html += """<hr />"""
 
         if polls:
-            html += "<select id=\"select-poll\" disabled style=\"width:30%\" onchange=\"select_poll(this)\">"
+            html += "<select id=\"select-poll\" disabled style=\"width:100%\" onchange=\"select_poll(this)\">"
             data = [_._asdict() for _ in polls]
             for poll in data:
                 html += f"""<option value="{poll['o_id']}">{poll['option']}</option>"""
 
             html += """</select>"""
 
+        html += """<hr />"""
         html += """<button id=\"btn-vote\" disabled onclick=\"vote()\">Vote</button><br />"""
 
         html += """
@@ -202,7 +205,7 @@ def create_app() -> FastAPI:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
                 await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                                                                  {"type": "notification", "data": message}
+                                                                  {"type": "vote", "data": message}
                                                                   )
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
