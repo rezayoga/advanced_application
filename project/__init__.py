@@ -92,22 +92,17 @@ def create_app() -> FastAPI:
                                     var content = document.createTextNode(event.data);
                                     message.appendChild(content);
                                     messages.appendChild(message);
-                                    """
-        if polls:
-            for poll in polls:
-                html += f"""
-                                    document.getElementById(\"btn-vote-{poll['o_id']}\").disabled = false;
-                                    """
-
-        html += """
+                                   
+                                    document.getElementById(\"btn-vote\").disabled = false;
+                                    
                                 };
                                 
                                 select_object.disabled = true;
                             }
                         }
 
-                        function vote(vote) {
-                            ws.send(JSON.stringify(vote));        
+                        function vote() {
+                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value }));        
                         }
         	        </script>
         	    </head>
@@ -131,9 +126,14 @@ def create_app() -> FastAPI:
         html += """<hr />"""
 
         if polls:
+            html += "<select id=\"select-poll\" style=\"width:30%\" onchange=\"select_poll(this)\">"
             data = [_._asdict() for _ in polls]
             for poll in data:
-                html += f"""<button id=\"btn-vote-{poll['o_id']}\" disabled onclick=\"vote({'id': '{poll['o_id']}', 'id': 'id' })\">{poll['option']}</button><br />"""
+                html += f"""<option value="{poll['o_id']}">{poll['question']}</option>"""
+
+            html += """</select>"""
+
+        html += """<button id=\"btn-vote\" disabled onclick=\"vote()\">Vote</button><br />"""
 
         html += """
                 	        <div id="messages"></div>
