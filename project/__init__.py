@@ -130,7 +130,7 @@ def create_app() -> FastAPI:
 
         if polls:
             data = [_._asdict() for _ in polls]
-            html += f"<h1 id=\"h1-title\">{data[0]['question']}</h1>"
+            html += f"<h2 id=\"h1-title\">{data[0]['question']}</h2>"
             html += "<select id=\"select-poll\" disabled style=\"width:100%\">"
             for poll in data:
                 html += f"""<option value="{poll['o_id']}">{poll['option']}</option>"""
