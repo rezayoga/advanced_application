@@ -62,6 +62,15 @@ def create_app() -> FastAPI:
 
     @app.get("/ws_client")
     async def ws_client(session: AsyncSession = Depends(get_session)):
+        """ Select users """
+        users = await session.execute(select(UserModel))
+        users = users.scalars().all()
+
+        """ Select polls """
+        polls = await session.execute(
+            text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
+                 " FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
+        polls = polls.fetchall()
 
         html = """
             <!DOCTYPE html>
@@ -82,7 +91,14 @@ def create_app() -> FastAPI:
                                     var content = document.createTextNode(event.data);
                                     message.appendChild(content);
                                     messages.appendChild(message);
-                                    document.getElementById("btn-vote-1").disabled = false;
+                                    """
+        if polls:
+            for poll in polls:
+                html += f"""
+                                    document.getElementById(\"btn-vote-{poll['p_id']}\").disabled = false;
+                                    """
+
+        html += """
                                 };
                                 
                                 select_object.disabled = true;
@@ -96,9 +112,6 @@ def create_app() -> FastAPI:
         	    </head>
         	    <body>"""
 
-        """ Select users """
-        users = await session.execute(select(UserModel))
-        users = users.scalars().all()
         if users:
             html += """
                                 <h1 id="h1-title">Users</h1>
@@ -115,17 +128,11 @@ def create_app() -> FastAPI:
                 			"""
 
         html += """<hr />"""
-        """ Select poll with all options """
-        polls = await session.execute(
-            text("SELECT p.id as p_id, p.question as question, o.id as o_id, o.option as option"
-                 " FROM polls AS p JOIN options AS o ON p.id = o.poll_id"))
-        polls = polls.fetchall()
+
         if polls:
             data = [_._asdict() for _ in polls]
             for poll in data:
                 html += f"""<button id=\"btn-vote-{poll['p_id']}\" disabled onclick=\"vote()\">{poll['option']}</button>"""
-
-
 
         html += """
                 	        <div id="messages"></div>
