@@ -205,7 +205,7 @@ def create_app() -> FastAPI:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
                 await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                                                                  {"type": "vote", "data": message}
+                                                                  {"type": "vote", "data": {"user_id": self.user_id, "message": message}}
                                                                   )
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
