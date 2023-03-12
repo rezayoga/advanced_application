@@ -58,7 +58,7 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root():
-        return {"message": "Hello World!"}
+        return {"data": "Hello World!"}
 
     @app.get("/ws_client")
     async def ws_client(session: AsyncSession = Depends(get_session)):
@@ -88,10 +88,10 @@ def create_app() -> FastAPI:
                                 ws.onmessage = function(event) {
                                     console.log(event.data);
                                     var messages = document.getElementById('messages');
-                                    var message = document.createElement('li');
+                                    var data = document.createElement('li');
                                     var content = document.createTextNode(event.data);
-                                    message.appendChild(content);
-                                    messages.appendChild(message);
+                                    data.appendChild(content);
+                                    messages.appendChild(data);
                                    
                                     document.getElementById(\"btn-vote\").disabled = false;
                                     document.getElementById(\"select-poll\").disabled = false;
@@ -190,7 +190,7 @@ def create_app() -> FastAPI:
                         console.print("====================================")
 
                         await self.websocket_manager.broadcast_all_users(
-                            {"type": "user_join", "data": u.name}
+                            {"type": "voter_join", "data": u.name}
                         )
 
                         user_id = user.id
@@ -200,18 +200,19 @@ def create_app() -> FastAPI:
                         await websocket.send_json({"type": "error", "data": "User not found!"})
                         await websocket.close()
 
-        async def on_receive(self, websocket: WebSocket, message: Any):
+        async def on_receive(self, websocket: WebSocket, data: Any):
             if self.user_id is None:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
                 await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                                                                  {"type": "vote", "data": {"user_id": self.user_id, "message": message}}
+                                                                  {"type": "vote",
+                                                                   "data": data}
                                                                   )
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
                 # await self.websocket_manager.broadcast_all_users(
-                #     {"type": "user_leave", "data": self.user_id}
+                #     {"type": "voter_leave", "data": self.user_id}
                 # )
                 self.websocket_manager.remove_user(self.user_id)
                 console.print(f"User {self.user_id} disconnected!")
