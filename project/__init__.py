@@ -79,6 +79,7 @@ def create_app() -> FastAPI:
         	        <title>Websocket Polling App</title>
         	        <script type="text/javascript">
         	            var ws = null;
+        	            var id = null;
                         function login(select_object) {
                             var id = select_object.value;
                             const ws_url = '/ws_vote/' + id;
@@ -132,7 +133,7 @@ def create_app() -> FastAPI:
         if polls:
             data = [_._asdict() for _ in polls]
             for poll in data:
-                html += f"""<button id=\"btn-vote-{poll['o_id']}\" disabled onclick=\"vote()\">{poll['option']}</button><br />"""
+                html += f"""<button id=\"btn-vote-{poll['o_id']}\" disabled onclick=\"vote({'id': '{poll['o_id']}', 'id': 'id' })\">{poll['option']}</button><br />"""
 
         html += """
                 	        <div id="messages"></div>
