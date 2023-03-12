@@ -94,6 +94,7 @@ def create_app() -> FastAPI:
                                     messages.appendChild(message);
                                    
                                     document.getElementById(\"btn-vote\").disabled = false;
+                                    document.getElementById(\"select-poll\").disabled = false;
                                     
                                 };
                                 
@@ -126,10 +127,10 @@ def create_app() -> FastAPI:
         html += """<hr />"""
 
         if polls:
-            html += "<select id=\"select-poll\" style=\"width:30%\" onchange=\"select_poll(this)\">"
+            html += "<select id=\"select-poll\" disabled style=\"width:30%\" onchange=\"select_poll(this)\">"
             data = [_._asdict() for _ in polls]
             for poll in data:
-                html += f"""<option value="{poll['o_id']}">{poll['question']}</option>"""
+                html += f"""<option value="{poll['o_id']}">{poll['option']}</option>"""
 
             html += """</select>"""
 
