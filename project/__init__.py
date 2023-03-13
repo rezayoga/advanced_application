@@ -93,8 +93,8 @@ def create_app() -> FastAPI:
                                     data.appendChild(content);
                                     messages.appendChild(data);
                                    
-                                    document.getElementById(\"btn-vote\").disabled = false;
-                                    document.getElementById(\"select-poll\").disabled = false;
+                                    # document.getElementById(\"btn-vote\").disabled = false;
+                                    # document.getElementById(\"select-poll\").disabled = false;
                                     
                                 };
                                 
