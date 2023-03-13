@@ -103,9 +103,10 @@ def create_app() -> FastAPI:
                         }
 
                         function vote() {
-                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value })); 
+                            alert(document.getElementById("select-poll").value);
                             document.getElementById(\"btn-vote\").disabled = true;
                             document.getElementById(\"select-poll\").disabled = true;
+                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value })); 
                         }
         	        </script>
         	    </head>
