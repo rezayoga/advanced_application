@@ -92,9 +92,11 @@ def create_app() -> FastAPI:
                                     var content = document.createTextNode(event.data);
                                     data.appendChild(content);
                                     messages.appendChild(data);
+                                    
+                                    console.log("Vote success");
                                    
-                                    # document.getElementById(\"btn-vote\").disabled = false;
-                                    # document.getElementById(\"select-poll\").disabled = false;
+                                    document.getElementById(\"btn-vote\").disabled = false;
+                                    document.getElementById(\"select-poll\").disabled = false;
                                     
                                 };
                                 
