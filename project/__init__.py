@@ -98,6 +98,8 @@ def create_app() -> FastAPI:
                                     document.getElementById(\"btn-vote\").disabled = false;
                                     document.getElementById(\"select-poll\").disabled = false;
                                     
+                                    vote();
+                                    
                                 };
                                 
                                 select_object.disabled = true;
@@ -105,7 +107,7 @@ def create_app() -> FastAPI:
                         }
 
                         function vote() {
-                            alert(document.getElementById("select-poll").value);
+                            alert("Vote success");
                             document.getElementById(\"btn-vote\").disabled = true;
                             document.getElementById(\"select-poll\").disabled = true;
                             ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value })); 
