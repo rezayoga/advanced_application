@@ -93,10 +93,10 @@ def create_app() -> FastAPI:
                                     data.appendChild(content);
                                     messages.appendChild(data);
                                     
-                                    console.log("Vote success");
-                                   
-                                    document.getElementById(\"btn-vote\").disabled = false;
-                                    document.getElementById(\"select-poll\").disabled = false;     
+                                    m = JSON.parse(event.data);
+                                    if (m.type === "voter_join") {
+                                        document.getElementById(\"btn-vote\").disabled = false;
+                                        document.getElementById(\"select-poll\").disabled = false;     
                                     
                                     document.getElementById(\"btn-vote\").onclick = function() {
                                         vote();
