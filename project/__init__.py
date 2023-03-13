@@ -96,10 +96,13 @@ def create_app() -> FastAPI:
                                     console.log("Vote success");
                                    
                                     document.getElementById(\"btn-vote\").disabled = false;
-                                    document.getElementById(\"select-poll\").disabled = false;
+                                    document.getElementById(\"select-poll\").disabled = false;     
                                     
-                                    vote();
+                                    document.getElementById(\"btn-vote\").onclick = function() {
+                                        vote();
+                                    };
                                     
+                                                                   
                                 };
                                 
                                 select_object.disabled = true;
@@ -143,7 +146,7 @@ def create_app() -> FastAPI:
             html += """</select>"""
 
         html += """<hr />"""
-        html += """<button id=\"btn-vote\" disabled onclick=\"vote()\">Vote</button><br />"""
+        html += """<button id=\"btn-vote\" disabled>Vote</button><br />"""
 
         html += """
                 	        <div id="messages"></div>
