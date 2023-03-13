@@ -96,7 +96,8 @@ def create_app() -> FastAPI:
                                     m = JSON.parse(event.data);
                                     if (m.type === "voter_join") {
                                         document.getElementById(\"btn-vote\").disabled = false;
-                                        document.getElementById(\"select-poll\").disabled = false;     
+                                        document.getElementById(\"select-poll\").disabled = false;
+                                    }
                                     
                                     document.getElementById(\"btn-vote\").onclick = function() {
                                         vote();
