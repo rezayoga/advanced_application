@@ -217,10 +217,7 @@ def create_app() -> FastAPI:
             else:
 
                 if data['type'] is not None:
-                    await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                                                                      {"type": "vote",
-                                                                       "data": data}
-                                                                      )
+                    await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                     console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
                     async with engine.connect() as conn:
