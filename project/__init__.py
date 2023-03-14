@@ -218,6 +218,7 @@ def create_app() -> FastAPI:
                                                                   {"type": "vote",
                                                                    "data": data}
                                                                   )
+                console.print(f"User {self.user_id} - {data} voted!")
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
