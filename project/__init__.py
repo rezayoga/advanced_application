@@ -112,7 +112,6 @@ def create_app() -> FastAPI:
                         }
 
                         function vote() {
-                            alert("Vote success");
                             document.getElementById(\"btn-vote\").disabled = true;
                             document.getElementById(\"select-poll\").disabled = true;
                             ws.send(JSON.stringify({ "type": "vote", "poll_id": document.getElementById(\"poll_id\").value, "option_id": document.getElementById(\"select-poll\").value }));
@@ -236,7 +235,7 @@ def create_app() -> FastAPI:
                                 inspect(e, methods=True)
                                 await session.rollback()
 
-                                await self.websocket_manager.broadcast_by_user_id(self.user_id, json.dumps({"type": "error", "data": "Vote failed, already voted!"}))
+                                await self.websocket_manager.broadcast_by_user_id(self.user_id, {"type": "error", "data": "Vote failed, already voted!"})
                                 console.print(f"User {self.user_id} - {data['option_id']} vote failed!")
 
                                 raise e
