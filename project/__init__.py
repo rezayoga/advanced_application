@@ -13,7 +13,7 @@ from project import database
 from project.config import settings
 from project.core import WebSocketManager
 from project.database import get_session
-from project.polls.models import User as UserModel
+from project.polls.models import User as UserModel, Vote as VoteModel
 from project.schemas import Vote as VoteSchema, User as UserSchema
 
 console = Console()
@@ -140,6 +140,7 @@ def create_app() -> FastAPI:
         if polls:
             data = [_._asdict() for _ in polls]
             html += f"<h2 id=\"h1-title\">{data[0]['question']}</h2>"
+            html += f"<input type=\"text\" id=\"poll_id\" value=\"{data[0]['p_id']}\">"
             html += "<select id=\"select-poll\" disabled style=\"width:100%\">"
             for poll in data:
                 html += f"""<option value="{poll['o_id']}">{poll['option']}</option>"""
@@ -214,11 +215,17 @@ def create_app() -> FastAPI:
             if self.user_id is None:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
-                await self.websocket_manager.broadcast_by_user_id(self.user_id,
-                                                                  {"type": "vote",
-                                                                   "data": data}
-                                                                  )
-                console.print(f"User {self.user_id} - {data['option_id']} voted!")
+
+                if data['option_id'] is not None:
+                    await self.websocket_manager.broadcast_by_user_id(self.user_id,
+                                                                      {"type": "vote",
+                                                                       "data": data}
+                                                                      )
+                    console.print(f"User {self.user_id} - {data['option_id']} voted!")
+
+                    vote = VoteModel(user_id=self.user_id, option_id=data['option_id'])
+
+
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
