@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from fastapi import FastAPI, WebSocket, Depends
@@ -217,8 +218,6 @@ def create_app() -> FastAPI:
             else:
 
                 if data['type'] is not None:
-                    await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
-                    console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
                     async with engine.connect() as conn:
                         async with conn.begin():
@@ -229,9 +228,17 @@ def create_app() -> FastAPI:
 
                                 session.add(vote)
                                 await session.commit()
+
+                                await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
+                                console.print(f"User {self.user_id} - {data['option_id']} voted!")
+
                             except Exception as e:
                                 inspect(e, methods=True)
                                 await session.rollback()
+
+                                await self.websocket_manager.broadcast_by_user_id(self.user_id, json.dumps({"type": "error", "data": "Vote failed, already voted!"}))
+                                console.print(f"User {self.user_id} - {data['option_id']} vote failed!")
+
                                 raise e
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
