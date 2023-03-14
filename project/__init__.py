@@ -114,7 +114,7 @@ def create_app() -> FastAPI:
                             alert("Vote success");
                             document.getElementById(\"btn-vote\").disabled = true;
                             document.getElementById(\"select-poll\").disabled = true;
-                            ws.send(JSON.stringify({ "option_id": document.getElementById("select-poll").value })); 
+                            ws.send(JSON.stringify({ "type": "vote", "poll_id": document.getElementById(\"poll_id\").value, "option_id": document.getElementById(\"select-poll\").value }));
                         }
         	        </script>
         	    </head>
@@ -216,16 +216,26 @@ def create_app() -> FastAPI:
                 raise RuntimeError("WebSocketManager.on_receive() called without a valid user_id")
             else:
 
-                if data['option_id'] is not None:
+                if data['type'] is not None:
                     await self.websocket_manager.broadcast_by_user_id(self.user_id,
                                                                       {"type": "vote",
                                                                        "data": data}
                                                                       )
                     console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
-                    vote = VoteModel(user_id=self.user_id, option_id=data['option_id'])
+                    async with engine.connect() as conn:
+                        async with conn.begin():
+                            session = AsyncSession(conn)
+                            try:
+                                vote = VoteModel(user_id=self.user_id, poll_id=data['poll_id'],
+                                                 option_id=data['option_id'])
 
-
+                                session.add(vote)
+                                await session.commit()
+                            except Exception as e:
+                                inspect(e, methods=True)
+                                await session.rollback()
+                                raise e
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
             if self.user_id is not None:
