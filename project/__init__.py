@@ -256,7 +256,7 @@ def create_app() -> FastAPI:
                 websocket.close()
 
     def log_incoming_message(message: dict):
-        console.log(message)
+        console.print(f"Message received: {message}")
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client

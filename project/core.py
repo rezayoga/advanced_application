@@ -77,7 +77,6 @@ class PikaClient:
         """Processing incoming message from RabbitMQ"""
         await message.ack()
         body = message.body.decode()
-        console.print(body)
         if body:
             self.process_callable(json.loads(body))
 
