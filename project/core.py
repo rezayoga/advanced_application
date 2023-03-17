@@ -75,12 +75,11 @@ class PikaClient:
 
     async def process_incoming_message(self, message):
         """Processing incoming message from RabbitMQ"""
-        # await message.ack()
-        # body = message.body.decode()
-        # console.print(body)
-        # if body:
-        #     self.process_callable(json.loads(body))
-        pass
+        await message.ack()
+        body = message.body.decode()
+        console.print(body)
+        if body:
+            self.process_callable(json.loads(body))
 
     async def publish_async(self, message: dict, queue_name: str):
         """Method to publish message to RabbitMQ"""
