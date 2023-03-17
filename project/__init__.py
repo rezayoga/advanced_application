@@ -22,6 +22,7 @@ console = Console()
 wm: WebSocketManager = None
 engine = database.engine
 loop = asyncio.get_event_loop()
+rabbitmq_queue_name = "first_queue"
 
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -41,7 +42,7 @@ def create_app() -> FastAPI:
         await database.connect()
 
         await pika_client.init_connection()
-        task = loop.create_task(pika_client.consume(loop))
+        task = loop.create_task(pika_client.consume(loop, rabbitmq_queue_name))
         await task
 
     @app.on_event("shutdown")
