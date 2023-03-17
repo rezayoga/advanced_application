@@ -1,3 +1,4 @@
+import asyncio
 import json
 from typing import Any
 
@@ -12,7 +13,7 @@ from starlette.types import ASGIApp, Scope, Receive, Send
 
 from project import database
 from project.config import settings
-from project.core import WebSocketManager
+from project.core import WebSocketManager, PikaClient
 from project.database import get_session
 from project.polls.models import User as UserModel, Vote as VoteModel
 from project.schemas import Vote as VoteSchema, User as UserSchema
@@ -20,7 +21,7 @@ from project.schemas import Vote as VoteSchema, User as UserSchema
 console = Console()
 wm: WebSocketManager = None
 engine = database.engine
-
+loop = asyncio.get_event_loop()
 
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -38,6 +39,10 @@ def create_app() -> FastAPI:
         console.print("=====================================")
         # send_external_message_sync(queue_name, "Chatbot Webhook API is running")
         await database.connect()
+
+        await pika_client.init_connection()
+        task = loop.create_task(pika_client.consume(loop))
+        await task
 
     @app.on_event("shutdown")
     async def shutdown_event():
@@ -249,4 +254,9 @@ def create_app() -> FastAPI:
                 console.print(f"User {self.user_id} disconnected!")
                 websocket.close()
 
+    def log_incoming_message(message: dict):
+        console.log(message)
+
+    pika_client = PikaClient(log_incoming_message)
+    app.pika_client = pika_client
     return app
