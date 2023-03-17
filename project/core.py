@@ -44,4 +44,58 @@ class WebSocketManager:
         for user_id, websocket in self._users.items():
             await websocket.send_json(jsonable_encoder(payload))
 
+class PikaClient:
+    def __init__(self, process_callable):
+        self.connection = None
+        self.process_callable = process_callable
 
+    async def init_connection(self) -> AbstractRobustConnection:
+        """Initiate connection to RabbitMQ"""
+        self.connection = await connect_robust(
+            os.environ.get("RABBITMQ_URL", "amqp://rnd:password@rnd.coster.id:5672")
+        )
+
+        return self.connection
+
+    async def consume(self, loop):
+        """Setup message listener with the current running loop"""
+        connection = await connect_robust(host='rnd.coster.id', port=5672, login='rnd', password='password', loop=loop)
+        channel = await connection.channel()
+        queue = await channel.declare_queue(settings.RABBITMQ_SERVICE_QUEUE_NAME, durable=True, auto_delete=False)
+        # await queue.consume(self.process_incoming_message, no_ack=False)
+        return connection
+
+        # async def process_incoming_message(self, message):
+        # 	"""Processing incoming message from RabbitMQ"""
+        # 	message.ack()
+        # 	body = message.body
+        # 	if body:
+        # 		self.process_callable(json.loads(body))
+
+    async def publish_async(self, message: dict):
+        """Method to publish message to RabbitMQ"""
+        async with self.connection:
+            channel = await self.connection.channel()
+            await channel.default_exchange.publish(
+                aio_pika.Message(
+                    body=json.dumps(message).encode(),
+                    delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                ),
+                routing_key=settings.RABBITMQ_SERVICE_QUEUE_NAME
+            )
+
+    def publish(self, message: dict):
+        """Method to publish message to RabbitMQ"""
+        self.channel.basic_publish(
+            exchange='',
+            routing_key=self.publish_queue_name,
+            properties=pika.BasicProperties(
+                reply_to=self.callback_queue,
+                correlation_id=str(uuid.uuid4())
+            ),
+            body=json.dumps(message)
+        )
+
+    def close(self):
+        """Close connection to RabbitMQ"""
+        self.connection.close()
