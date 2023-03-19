@@ -67,7 +67,7 @@ class Notification(BaseModel):
                 "recipients": ["b001",
                                "b002",
                                "b003"],
-                "message": {[
+                "message": {"data": [
                     {"type": "text", "text": "Hello World"},
                     {"type": "image", "url": "https://example.com/image.png"},
                     {"type": "button", "text": "Click Me", "url": "https://example.com"},
