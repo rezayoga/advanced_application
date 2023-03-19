@@ -53,6 +53,9 @@ class WebSocketManager:
         for user_id, websocket in self._users.items():
             await websocket.send_json(jsonable_encoder(payload))
 
+    @property
+    def users(self):
+        return self._users
 
 class PikaClient:
     def __init__(self, process_callable):

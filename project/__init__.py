@@ -3,6 +3,7 @@ from typing import Any
 
 from fastapi import FastAPI, WebSocket, Depends
 from fastapi.responses import HTMLResponse
+from pydantic import parse_obj_as
 from rich import inspect
 from rich.console import Console
 from sqlalchemy import select, text
@@ -15,7 +16,7 @@ from project.config import settings
 from project.core import WebSocketManager, PikaClient
 from project.database import get_session
 from project.polls.models import User as UserModel, Vote as VoteModel
-from project.schemas import Vote as VoteSchema, User as UserSchema
+from project.schemas import Vote as VoteSchema, User as UserSchema, Notification as NotificationSchema
 
 console = Console()
 wm: WebSocketManager = None
@@ -259,7 +260,14 @@ def create_app() -> FastAPI:
     def log_incoming_message(message: dict):
         console.print(f"Message received: {message}")
         if wm is not None:
-            loop.create_task(wm.broadcast_all_users(message))
+            users = wm.users.keys()
+            notification = parse_obj_as(NotificationSchema, message)
+
+            if notification.broadcast is True:
+                wm.broadcast_all_users(notification)
+            else:
+                for user in users:
+                    wm.broadcast_by_user_id(user, notification)
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
