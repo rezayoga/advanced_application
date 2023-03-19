@@ -239,6 +239,8 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
+                                await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={"user_id": self.user_id,})
+
                             except Exception as e:
                                 inspect(e, methods=True)
                                 await session.rollback()
