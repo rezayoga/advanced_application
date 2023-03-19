@@ -255,7 +255,7 @@ def create_app() -> FastAPI:
                 console.print(f"User {self.user_id} disconnected!")
                 websocket.close()
 
-    def log_incoming_message(message: dict):
+    async def log_incoming_message(message: dict):
         console.print(f"Message received: {message}")
         if wm is not None:
             await wm.broadcast_all_users(message)
