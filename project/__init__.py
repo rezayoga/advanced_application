@@ -2,6 +2,7 @@ import asyncio
 from typing import Any
 
 from fastapi import FastAPI, WebSocket, Depends
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 from pydantic import parse_obj_as
 from rich import inspect
@@ -264,10 +265,10 @@ def create_app() -> FastAPI:
             notification = parse_obj_as(NotificationSchema, message)
 
             if notification.broadcast is True:
-                loop.create_task(wm.broadcast_all_users(notification))
+                loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification)))
             else:
                 for user in users:
-                    loop.create_task(wm.broadcast_by_user_id(user, notification))
+                    loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification)))
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
