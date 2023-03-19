@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 
 
@@ -25,3 +27,9 @@ class Vote(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Notification(BaseModel):
+    broadcast: bool
+    recipients: List[str]
+    message: str

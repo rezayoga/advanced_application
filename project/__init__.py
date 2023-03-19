@@ -257,6 +257,8 @@ def create_app() -> FastAPI:
 
     def log_incoming_message(message: dict):
         console.print(f"Message received: {message}")
+        if wm is not None:
+            wm.broadcast_all_users(message)
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
