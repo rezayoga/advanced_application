@@ -1,5 +1,4 @@
 import asyncio
-import json
 from typing import Any
 
 from fastapi import FastAPI, WebSocket, Depends
@@ -23,6 +22,7 @@ wm: WebSocketManager = None
 engine = database.engine
 loop = asyncio.get_event_loop()
 rabbitmq_queue_name = "first_queue"
+
 
 def create_app() -> FastAPI:
     app = FastAPI()
@@ -241,7 +241,8 @@ def create_app() -> FastAPI:
                                 inspect(e, methods=True)
                                 await session.rollback()
 
-                                await self.websocket_manager.broadcast_by_user_id(self.user_id, {"type": "error", "data": "Vote failed, already voted!"})
+                                await self.websocket_manager.broadcast_by_user_id(self.user_id, {"type": "error",
+                                                                                                 "data": "Vote failed, already voted!"})
                                 console.print(f"User {self.user_id} - {data['option_id']} vote failed!")
 
                                 raise e
@@ -255,10 +256,10 @@ def create_app() -> FastAPI:
                 console.print(f"User {self.user_id} disconnected!")
                 websocket.close()
 
-    async def log_incoming_message(message: dict):
+    def log_incoming_message(message: dict):
         console.print(f"Message received: {message}")
         if wm is not None:
-            await wm.broadcast_all_users(message)
+            loop.create_task(wm.broadcast_all_users(message))
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
