@@ -265,10 +265,10 @@ def create_app() -> FastAPI:
             notification = parse_obj_as(NotificationSchema, message)
 
             if notification.broadcast is True:
-                loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification)))
+                loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification.message)))
             else:
                 for user in users:
-                    loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification)))
+                    loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
