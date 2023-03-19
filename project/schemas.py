@@ -64,14 +64,13 @@ class Notification(BaseModel):
         schema_extra = {
             "example": {
                 "broadcast": True,
-                "recipients": ["b001",
-                               "b002",
-                               "b003"],
+                "recipients": ["555c29ce-f878-4296-8776-b8f928cdc61e",
+                               "937e41aa-0513-4e3f-8e00-f559acb5af7d",
+                               "0a1ed18d-eab2-43bf-a844-206bbc93d572"],
                 "message": {"data": [
                     {"type": "text", "text": "Hello World"},
                     {"type": "image", "url": "https://example.com/image.png"},
                     {"type": "button", "text": "Click Me", "url": "https://example.com"},
-                    {"type": "text", "text": "Ok World"},
                     {"type": "image", "url": "https://example.com/image2.png"},
                 ]}
             }
