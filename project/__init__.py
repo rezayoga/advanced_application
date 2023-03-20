@@ -266,7 +266,7 @@ def create_app() -> FastAPI:
                                         "937e41aa-0513-4e3f-8e00-f559acb5af7d",
                                         "0a1ed18d-eab2-43bf-a844-206bbc93d572"
                                     ],
-                                    "message": notification_message.json()
+                                    "message": jsonable_encoder(notification_message.dict())
                                 })
 
                             except Exception as e:
