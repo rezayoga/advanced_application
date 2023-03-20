@@ -241,9 +241,18 @@ def create_app() -> FastAPI:
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
                                 vote_count = await get_vote_count(session, data['poll_id'])
-                                console.print("====================================")
-                                console.print(vote_count)
-                                console.print("====================================")
+                                
+                                if vote_count:
+                                    data = [_._asdict() for _ in vote_count]
+                                    console.print("====================================")
+                                    console.print(data[0]['question'])
+                                    console.print(data[0]['poll_id'])
+                                    console.print("====================================")
+                                    for v in data:
+                                        console.print("====================================")
+                                        console.print(v['option'])
+                                        console.print(v['total'])
+                                        console.print("====================================")
 
                                 await pika_client.init_connection()
                                 await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
