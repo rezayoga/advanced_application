@@ -99,7 +99,7 @@ def create_app() -> FastAPI:
                                     console.log(event.data);
                                     var messages = document.getElementById('messages');
                                     var data = document.createElement('li');
-                                    var content = JSON.stringify(event.data, null, 2);
+                                    var content = document.createTextNode(event.data);
                                     data.appendChild(content);
                                     messages.appendChild(data);
                                     
@@ -111,7 +111,9 @@ def create_app() -> FastAPI:
                                     
                                     document.getElementById(\"btn-vote\").onclick = function() {
                                         vote();
-                                    };                          
+                                    };
+                                    
+                                                                   
                                 };
                                 
                                 select_object.disabled = true;
