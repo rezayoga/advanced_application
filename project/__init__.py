@@ -240,6 +240,11 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
+                                vote_count = get_vote_count(session, data['poll_id'])
+                                console.print("====================================")
+                                console.print(vote_count)
+                                console.print("====================================")
+
                                 await pika_client.init_connection()
                                 await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
                                     "broadcast": True,
@@ -288,6 +293,14 @@ def create_app() -> FastAPI:
             else:
                 for user in users:
                     loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
+
+    def get_vote_count(session: AsyncSession, poll_id: str):
+        vote_count = await session.execute(
+            text(f"""select count(*) as total, v.poll_id, o.option, p.question
+from votes v join options o on v.option_id = o.id
+join polls p on o.poll_id = p.id where v.poll_id = {poll_id}
+group by v.poll_id, o.option, p.question;"""))
+        return vote_count.fetchall()
 
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
