@@ -45,7 +45,6 @@ def create_app() -> FastAPI:
         # send_external_message_sync(queue_name, "Chatbot Webhook API is running")
         await database.connect()
 
-        global pika_client
         await pika_client.init_connection()
         task = loop.create_task(pika_client.consume(loop, rabbitmq_queue_name))
         await task
@@ -293,6 +292,7 @@ def create_app() -> FastAPI:
                 for user in users:
                     loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
 
+    global pika_client
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
     return app
