@@ -30,6 +30,12 @@ class Vote(BaseModel):
         orm_mode = True
 
 
+class NotificationMessage(BaseModel):
+    poll_id: str
+    question: str
+    votes: List[Any]
+
+
 class Notification(BaseModel):
     broadcast: bool
     recipients: List[str]

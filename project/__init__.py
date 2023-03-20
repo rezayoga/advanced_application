@@ -18,7 +18,8 @@ from project.config import settings
 from project.core import WebSocketManager, PikaClient
 from project.database import get_session
 from project.polls.models import User as UserModel, Vote as VoteModel
-from project.schemas import Vote as VoteSchema, User as UserSchema, Notification as NotificationSchema
+from project.schemas import Vote as VoteSchema, User as UserSchema, Notification as NotificationSchema, \
+    NotificationMessage as NotificationMessageSchema
 
 console = Console()
 wm: WebSocketManager = None
@@ -241,18 +242,21 @@ def create_app() -> FastAPI:
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
                                 vote_count = await get_vote_count(session, data['poll_id'])
-                                
+
                                 if vote_count:
                                     data = [_._asdict() for _ in vote_count]
-                                    console.print("====================================")
-                                    console.print(data[0]['question'])
-                                    console.print(data[0]['poll_id'])
-                                    console.print("====================================")
+                                    votes = []
                                     for v in data:
-                                        console.print("====================================")
-                                        console.print(v['option'])
-                                        console.print(v['total'])
-                                        console.print("====================================")
+                                        votes.append({
+                                            "option": v['option'],
+                                            "total": v['total']
+                                        })
+
+                                    notification_message = NotificationMessageSchema(
+                                        poll_id=data[0]['poll_id'],
+                                        question=data[0]['question'],
+                                        votes=votes
+                                    )
 
                                 await pika_client.init_connection()
                                 await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
@@ -262,14 +266,7 @@ def create_app() -> FastAPI:
                                         "937e41aa-0513-4e3f-8e00-f559acb5af7d",
                                         "0a1ed18d-eab2-43bf-a844-206bbc93d572"
                                     ],
-                                    "message": {
-                                        "data": [
-                                            {
-                                                "type": "text",
-                                                "text": f"Publish from WebSocket @ {datetime.now()}"
-                                            }
-                                        ]
-                                    }
+                                    "message": notification_message.json()
                                 })
 
                             except Exception as e:
