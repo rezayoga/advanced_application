@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime
 from typing import Any
 
 from fastapi import FastAPI, WebSocket, Depends
@@ -276,7 +275,6 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, {"type": "error",
                                                                                                  "data": "Vote failed, already voted!"})
                                 console.print(f"User {self.user_id} - {data['option_id']} vote failed!")
-
                                 raise e
 
         async def on_disconnect(self, websocket: WebSocket, close_code: int):
