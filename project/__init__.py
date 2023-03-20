@@ -298,7 +298,7 @@ def create_app() -> FastAPI:
         vote_count = await session.execute(
             text(f"""select count(*) as total, v.poll_id, o.option, p.question
 from votes v join options o on v.option_id = o.id
-join polls p on o.poll_id = p.id where v.poll_id = {poll_id}
+join polls p on o.poll_id = p.id where v.poll_id = '{poll_id}'
 group by v.poll_id, o.option, p.question;"""))
         return vote_count.fetchall()
 
