@@ -22,7 +22,6 @@ from project.schemas import Vote as VoteSchema, User as UserSchema, Notification
 
 console = Console()
 wm: WebSocketManager = None
-pika_client: PikaClient = None
 engine = database.engine
 loop = asyncio.get_event_loop()
 rabbitmq_queue_name = "first_queue"
@@ -241,25 +240,23 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
-                                if pika_client.is_connected():
-                                    await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
-                                        "broadcast": True,
-                                        "recipients": [
-                                            "555c29ce-f878-4296-8776-b8f928cdc61e",
-                                            "937e41aa-0513-4e3f-8e00-f559acb5af7d",
-                                            "0a1ed18d-eab2-43bf-a844-206bbc93d572"
-                                        ],
-                                        "message": {
-                                            "data": [
-                                                {
-                                                    "type": "text",
-                                                    "text": f"Publish from WebSocket @ {datetime.now()}"
-                                                }
-                                            ]
-                                        }
-                                    })
-                                else:
-                                    console.print("RabbitMQ not connected!")
+                                await pika_client.init_connection()
+                                await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
+                                    "broadcast": True,
+                                    "recipients": [
+                                        "555c29ce-f878-4296-8776-b8f928cdc61e",
+                                        "937e41aa-0513-4e3f-8e00-f559acb5af7d",
+                                        "0a1ed18d-eab2-43bf-a844-206bbc93d572"
+                                    ],
+                                    "message": {
+                                        "data": [
+                                            {
+                                                "type": "text",
+                                                "text": f"Publish from WebSocket @ {datetime.now()}"
+                                            }
+                                        ]
+                                    }
+                                })
 
                             except Exception as e:
                                 inspect(e, methods=True)
@@ -292,7 +289,6 @@ def create_app() -> FastAPI:
                 for user in users:
                     loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
 
-    global pika_client
     pika_client = PikaClient(log_incoming_message)
     app.pika_client = pika_client
     return app
