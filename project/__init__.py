@@ -22,6 +22,7 @@ from project.schemas import Vote as VoteSchema, User as UserSchema, Notification
 
 console = Console()
 wm: WebSocketManager = None
+pika_client: PikaClient = None
 engine = database.engine
 loop = asyncio.get_event_loop()
 rabbitmq_queue_name = "first_queue"
@@ -44,6 +45,7 @@ def create_app() -> FastAPI:
         # send_external_message_sync(queue_name, "Chatbot Webhook API is running")
         await database.connect()
 
+        global pika_client
         await pika_client.init_connection()
         task = loop.create_task(pika_client.consume(loop, rabbitmq_queue_name))
         await task
