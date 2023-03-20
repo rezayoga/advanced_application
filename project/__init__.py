@@ -111,9 +111,7 @@ def create_app() -> FastAPI:
                                     
                                     document.getElementById(\"btn-vote\").onclick = function() {
                                         vote();
-                                    };
-                                    
-                                                                   
+                                    };                          
                                 };
                                 
                                 select_object.disabled = true;
