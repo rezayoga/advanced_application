@@ -99,7 +99,7 @@ def create_app() -> FastAPI:
                                     console.log(event.data);
                                     var messages = document.getElementById('messages');
                                     var data = document.createElement('li');
-                                    var content = document.createTextNode(event.data);
+                                    var content = document.createTextNode(JSON.stringify(event.data, null, 2));
                                     data.appendChild(content);
                                     messages.appendChild(data);
                                     
