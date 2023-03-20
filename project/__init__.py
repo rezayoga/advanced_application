@@ -240,7 +240,7 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
-                                vote_count = get_vote_count(session, data['poll_id'])
+                                vote_count = await get_vote_count(session, data['poll_id'])
                                 console.print("====================================")
                                 console.print(vote_count)
                                 console.print("====================================")
