@@ -294,7 +294,7 @@ def create_app() -> FastAPI:
                 for user in users:
                     loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
 
-    def get_vote_count(session: AsyncSession, poll_id: str):
+    async def get_vote_count(session: AsyncSession, poll_id: str):
         vote_count = await session.execute(
             text(f"""select count(*) as total, v.poll_id, o.option, p.question
 from votes v join options o on v.option_id = o.id
