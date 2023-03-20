@@ -240,22 +240,23 @@ def create_app() -> FastAPI:
                                 await self.websocket_manager.broadcast_by_user_id(self.user_id, data)
                                 console.print(f"User {self.user_id} - {data['option_id']} voted!")
 
-                                await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
-                                    "broadcast": True,
-                                    "recipients": [
-                                        "555c29ce-f878-4296-8776-b8f928cdc61e",
-                                        "937e41aa-0513-4e3f-8e00-f559acb5af7d",
-                                        "0a1ed18d-eab2-43bf-a844-206bbc93d572"
-                                    ],
-                                    "message": {
-                                        "data": [
-                                            {
-                                                "type": "text",
-                                                "text": f"Publish from WebSocket @ {datetime.now()}"
-                                            }
-                                        ]
-                                    }
-                                })
+                                if pika_client.is_connected():
+                                    await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
+                                        "broadcast": True,
+                                        "recipients": [
+                                            "555c29ce-f878-4296-8776-b8f928cdc61e",
+                                            "937e41aa-0513-4e3f-8e00-f559acb5af7d",
+                                            "0a1ed18d-eab2-43bf-a844-206bbc93d572"
+                                        ],
+                                        "message": {
+                                            "data": [
+                                                {
+                                                    "type": "text",
+                                                    "text": f"Publish from WebSocket @ {datetime.now()}"
+                                                }
+                                            ]
+                                        }
+                                    })
 
                             except Exception as e:
                                 inspect(e, methods=True)

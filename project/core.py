@@ -62,6 +62,9 @@ class PikaClient:
         self.connection = None
         self.process_callable = process_callable
 
+    def is_connected(self):
+        return self.connection is not None
+
     async def init_connection(self) -> AbstractRobustConnection:
         """Initiate connection to RabbitMQ"""
         self.connection = await connect_robust("amqp://reza:reza@rezayogaswara.com:5672")
