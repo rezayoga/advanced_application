@@ -257,6 +257,8 @@ def create_app() -> FastAPI:
                                             ]
                                         }
                                     })
+                                else:
+                                    console.print("RabbitMQ not connected!")
 
                             except Exception as e:
                                 inspect(e, methods=True)
