@@ -155,7 +155,7 @@ def create_app() -> FastAPI:
             html += """</select>"""
 
         html += """<hr />"""
-        html += """<button id=\"btn-vote\" disabled>Vote</button><br />"""
+        html += """<button id=\"btn-vote\" disabled>Vote!</button><br />"""
 
         html += """
                 	        <div id="messages"></div>
