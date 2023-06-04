@@ -86,7 +86,7 @@ def create_app() -> FastAPI:
             <!DOCTYPE html>
         	<html>
         	    <head>
-        	        <title>Websocket Polling App</title>
+        	        <title>Polling Websocket App</title>
         	        <script type="text/javascript">
         	            var ws = null;
         	            var id = null;
