@@ -1,6 +1,6 @@
 import asyncio
 from typing import Any
-
+import uuid
 from fastapi import FastAPI, WebSocket, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
@@ -230,7 +230,7 @@ def create_app() -> FastAPI:
                         async with conn.begin():
                             session = AsyncSession(conn)
                             try:
-                                vote = VoteModel(user_id=self.user_id, poll_id=data['poll_id'],
+                                vote = VoteModel(id=str(uuid.uuid4()), user_id=self.user_id, poll_id=data['poll_id'],
                                                  option_id=data['option_id'])
 
                                 session.add(vote)
