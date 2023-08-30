@@ -136,8 +136,8 @@ dmypy.json
 node_modules/
 
 .DS_Store
-#alembic.ini
-#alembic/
+alembic.ini
+alembic/
 
 .idea/
 .vscode/
