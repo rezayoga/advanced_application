@@ -198,6 +198,9 @@ def create_app() -> FastAPI:
                     session = AsyncSession(conn)
                     user = await session.execute(select(UserModel).where(UserModel.id == id_))
                     user = user.scalars().first()
+
+                    console.print(user)
+
                     u = UserSchema.from_orm(user)
 
                     if user is not None:
