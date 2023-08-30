@@ -37,7 +37,8 @@ class Vote(Base):
     user_id = Column(String(128), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), nullable=False, default=func.now())
 
-    def __init__(self, poll_id, option_id, user_id):
+    def __init__(self, id, poll_id, option_id, user_id):
+        self.id = id
         self.poll_id = poll_id
         self.option_id = option_id
         self.user_id = user_id
