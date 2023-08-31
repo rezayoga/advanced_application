@@ -31,7 +31,7 @@ class Vote(Base):
         UniqueConstraint("poll_id", "user_id", name="unique_vote"),
     )
 
-    id = Column(String(128), primary_key=True, server_default=text("uuid_generate_v4()"))
+    id = Column(String(128), primary_key=True, default=func.uuid_generate_v4())
     poll_id = Column(String(128), nullable=False, index=True)
     option_id = Column(String(128), nullable=False, index=True)
     user_id = Column(String(128), nullable=False, index=True)
