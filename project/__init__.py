@@ -18,7 +18,7 @@ from project.core import WebSocketManager, PikaClient
 from project.database import get_session
 from project.polls.models import User as UserModel, Vote as VoteModel
 from project.schemas import Vote as VoteSchema, User as UserSchema, Notification as NotificationSchema, \
-    NotificationMessage as NotificationMessageSchema
+    VoteNotification as VoteNotificationSchema
 
 console = Console()
 wm: WebSocketManager = None
@@ -250,7 +250,7 @@ def create_app() -> FastAPI:
                                             "total": v['total']
                                         })
 
-                                    notification_message = NotificationMessageSchema(
+                                    vote_notification = VoteNotificationSchema(
                                         poll_id=data[0]['poll_id'],
                                         question=data[0]['question'],
                                         votes=votes
@@ -264,7 +264,7 @@ def create_app() -> FastAPI:
                                         "937e41aa-0513-4e3f-8e00-f559acb5af7d",
                                         "0a1ed18d-eab2-43bf-a844-206bbc93d592"
                                     ],
-                                    "message": jsonable_encoder(notification_message.dict())
+                                    "message": jsonable_encoder(vote_notification.dict())
                                 })
 
                             except Exception as e:
@@ -290,6 +290,8 @@ def create_app() -> FastAPI:
         if wm is not None:
             users = wm.users.keys()
             notification = parse_obj_as(NotificationSchema, message)
+
+            console.print(f"Users: {users}")
 
             if notification.broadcast is True:
                 loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification.message)))
