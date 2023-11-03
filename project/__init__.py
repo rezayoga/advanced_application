@@ -258,6 +258,12 @@ def create_app() -> FastAPI:
 
                                 await pika_client.init_connection()
                                 await pika_client.publish_async(queue_name=rabbitmq_queue_name, message={
+                                    "broadcast": True,
+                                    "recipients": [
+                                        "555c29ce-f878-4296-8776-b8f928cd241e",
+                                        "937e41aa-0513-4e3f-8e00-f559acb5af7d",
+                                        "0a1ed18d-eab2-43bf-a844-206bbc93d592"
+                                    ],
                                     "message": jsonable_encoder(notification_message.dict())
                                 })
 
