@@ -209,7 +209,7 @@ def create_app() -> FastAPI:
                         console.print("====================================")
 
                         await self.websocket_manager.broadcast_all_users(
-                            {"type": "voter_join", "data": u.name}
+                            {"type": "voter_join", "data": u.name, "user_id": u.id}
                         )
 
                         user_id = user.id
