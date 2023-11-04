@@ -37,8 +37,8 @@ class VoteNotification(BaseModel):
 
 
 class Notification(BaseModel):
-    broadcast: bool
-    recipients: List[str]
+    broadcast: bool = False
+    recipients: List[str] = []
     message: Any = None
 
     @validator("recipients")
