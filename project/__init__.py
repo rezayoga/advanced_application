@@ -296,11 +296,15 @@ def create_app() -> FastAPI:
             if notification.broadcast is True:
                 loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification.message)))
             else:
-                for id in users:
-                    console.print(f"User > {id}")
-                    loop.create_task(wm.broadcast_by_user_id(id, jsonable_encoder(notification.message)))
+                r = sorted(notification.recipients)
+                active_user_in_websocket = sorted(users)
+                intersection = set(r).intersection(set(active_user_in_websocket))
+                if len(intersection) > 0:
+                    for user_id in intersection:
+                        loop.create_task(wm.broadcast_by_user_id(user_id, jsonable_encoder(notification.message)))
 
-    async def get_vote_count(session: AsyncSession, poll_id: str):
+
+async def get_vote_count(session: AsyncSession, poll_id: str):
         vote_count = await session.execute(
             text(f"""select count(*) as total, v.poll_id, o.option, p.question
 from votes v join options o on v.option_id = o.id
