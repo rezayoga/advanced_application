@@ -296,8 +296,9 @@ def create_app() -> FastAPI:
             if notification.broadcast is True:
                 loop.create_task(wm.broadcast_all_users(jsonable_encoder(notification.message)))
             else:
-                for user in users:
-                    loop.create_task(wm.broadcast_by_user_id(user, jsonable_encoder(notification.message)))
+                for id in users:
+                    console.print(f"User {id}")
+                    loop.create_task(wm.broadcast_by_user_id(id, jsonable_encoder(notification.message)))
 
     async def get_vote_count(session: AsyncSession, poll_id: str):
         vote_count = await session.execute(
